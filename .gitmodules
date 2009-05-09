@@ -1,0 +1,3 @@
+[submodule "lib/php5-http-utils"]
+	path = lib/php5-http-utils
+	url = git://github.com/isofarro/php5-http-utils.git
