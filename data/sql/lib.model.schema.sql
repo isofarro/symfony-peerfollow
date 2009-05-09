@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS `person`;
 CREATE TABLE `person`
 (
 	`id` INTEGER  NOT NULL AUTO_INCREMENT,
-	`username` VARCHAR(64)  NOT NULL,
+	`username` VARCHAR(32)  NOT NULL,
 	`bio` TEXT,
 	`image` TEXT,
 	`no_followers` INTEGER,

@@ -36,14 +36,21 @@ EOF;
 
 		// add your code here
 		$topic = $arguments['topic'];
+		
+		$topicObj = new Topic();
+		$topicObj->setName($topic);
+		$topicObj->setSlug($topic);
+		$topicObj->save();
+		
+		
 		$manager = new TopicManager();
 		
 		$people = $manager->getSelfTaggers($topic);
 		
-		$this->processPeople($people);
+		$this->processPeople($topicObj, $people);
   }
   
-  	public function processPeople($people) {
+  	public function processPeople($topic, $people) {
 		//print_r($people);
 		
 		$personCriteria = new Criteria();
@@ -108,7 +115,14 @@ EOF;
 
 			}
 
+			
+			$tp = new Topicperson();
+			$tp->setPerson($person);
+			$tp->setTopic($topic);
+
+			$person->addTopicperson($tp);			
 			$person->save();
+			
 			echo '.';
 			$count++;
 		}		

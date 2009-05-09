@@ -25,7 +25,7 @@ class BasePersonForm extends BaseFormPropel
 
     $this->setValidators(array(
       'id'           => new sfValidatorPropelChoice(array('model' => 'Person', 'column' => 'id', 'required' => false)),
-      'username'     => new sfValidatorString(array('max_length' => 64)),
+      'username'     => new sfValidatorString(array('max_length' => 32)),
       'bio'          => new sfValidatorString(array('required' => false)),
       'image'        => new sfValidatorString(array('required' => false)),
       'no_followers' => new sfValidatorInteger(array('required' => false)),
