@@ -40,7 +40,7 @@ EOF;
 		
 		$people = $manager->getSelfTaggers($topic);
 		
-		$this->processPeople($people);
+		//$this->processPeople($people);
   }
   
   	public function processPeople($people) {

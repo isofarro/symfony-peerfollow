@@ -9,18 +9,13 @@ class TopicManager {
 
 		$people = array();
 		
-		// TODO: Temporary while wifi sucks
-		$file = '/home/isofarro/Documents/savedPages/wefollow-accessibility.html';
-		
-		$page = $api->getTaggedPeople($file); //$topic);
+		$page = $api->getTaggedPeople($topic);
 		$people = array_merge($people, $page);
 		
-		// TODO: try when we have wifi
-		/****
 		while($api->hasNext()) {
 			$page = $api->next();
+			$people = array_merge($people, $page);
 		}
-		****/
 		
 		
 		//print_r($people);
