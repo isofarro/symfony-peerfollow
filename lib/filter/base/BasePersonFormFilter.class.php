@@ -21,6 +21,7 @@ class BasePersonFormFilter extends BaseFormFilterPropel
       'no_followers' => new sfWidgetFormFilterInput(),
       'fullname'     => new sfWidgetFormFilterInput(),
       'website'      => new sfWidgetFormFilterInput(),
+      'status'       => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -30,6 +31,7 @@ class BasePersonFormFilter extends BaseFormFilterPropel
       'no_followers' => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'fullname'     => new sfValidatorPass(array('required' => false)),
       'website'      => new sfValidatorPass(array('required' => false)),
+      'status'       => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('person_filters[%s]');
@@ -54,6 +56,7 @@ class BasePersonFormFilter extends BaseFormFilterPropel
       'no_followers' => 'Number',
       'fullname'     => 'Text',
       'website'      => 'Text',
+      'status'       => 'Text',
     );
   }
 }

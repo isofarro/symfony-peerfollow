@@ -19,6 +19,7 @@ CREATE TABLE `person`
 	`no_followers` INTEGER,
 	`fullname` VARCHAR(255),
 	`website` TEXT,
+	`status` VARCHAR(255) default '' NOT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `person_U_1` (`username`)
 )Type=InnoDB;

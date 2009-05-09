@@ -7,6 +7,7 @@ propel:
     no_followers: { type: integer }
     fullname:     { type: varchar(255) }
     website:      { type: longvarchar }
+    status:       { type: varchar(255), default: N, required: true }
     
   tag:
     id: ~

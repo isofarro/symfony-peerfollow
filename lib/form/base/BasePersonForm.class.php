@@ -20,6 +20,7 @@ class BasePersonForm extends BaseFormPropel
       'no_followers' => new sfWidgetFormInput(),
       'fullname'     => new sfWidgetFormInput(),
       'website'      => new sfWidgetFormTextarea(),
+      'status'       => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -30,6 +31,7 @@ class BasePersonForm extends BaseFormPropel
       'no_followers' => new sfValidatorInteger(array('required' => false)),
       'fullname'     => new sfValidatorString(array('max_length' => 255, 'required' => false)),
       'website'      => new sfValidatorString(array('required' => false)),
+      'status'       => new sfValidatorString(array('max_length' => 255)),
     ));
 
     $this->validatorSchema->setPostValidator(

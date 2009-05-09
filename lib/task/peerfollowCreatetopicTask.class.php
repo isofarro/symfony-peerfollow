@@ -40,7 +40,7 @@ EOF;
 		
 		$people = $manager->getSelfTaggers($topic);
 		
-		//$this->processPeople($people);
+		$this->processPeople($people);
   }
   
   	public function processPeople($people) {
@@ -48,7 +48,8 @@ EOF;
 		
 		$personCriteria = new Criteria();
 		$tagCriteria    = new Criteria();
-
+		
+		$count = 0;
 		
 		foreach($people as $personObj) {
 
@@ -64,7 +65,8 @@ EOF;
 			$person->fromArray(array(
 				'Username'    => $personObj->username,
 				'Image'       => $personObj->image,
-				'NoFollowers' => $personObj->followers
+				'NoFollowers' => $personObj->followers,
+				'Status'      => 'N'
 			));
 			
 			if (!empty($personObj->bio)) {
@@ -104,7 +106,10 @@ EOF;
 
 			$person->save();
 			echo '.';
+			$count++;
 		}		
+
+		echo "\nAdded {$count} new people\n";
   	}
 
 
