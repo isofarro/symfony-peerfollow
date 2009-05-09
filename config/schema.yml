@@ -1,0 +1,31 @@
+propel:
+  person:
+    id: ~
+    username:     { type: varchar(64), required: true, index: unique }
+    bio:          { type: longvarchar }
+    image:        { type: longvarchar }
+    no_followers: { type: integer }
+    fullname:     { type: varchar(255) }
+    website:      { type: longvarchar }
+    
+  tag:
+    id: ~
+    slug: { type: varchar(32), required: true, index: unique }
+    
+  relation:
+    person_id:    { type: integer, foreignTable: person, foreignReference: id, required: true }
+    following_id: { type: integer, foreignTable: person, foreignReference: id, required: true }
+    
+  personTag:
+    person_id: { type: integer, foreignTable: person, foreignReference: id, required: true }
+    tag_id:    { type: integer, foreignTable: tag,    foreignReference: id, required: true }
+
+  topic:
+    id: ~
+    name: { type: varchar(64), required: true }
+    slug: { type: varchar(64), required: true, index: unique }
+    
+  topicPerson:
+    person_id: { type: integer, foreignTable: person, foreignReference: id, required: true }
+    topic_id:  { type: integer, foreignTable: topic,  foreignReference: id, required: true }
+

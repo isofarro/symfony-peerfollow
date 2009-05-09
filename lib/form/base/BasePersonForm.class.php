@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * Person form base class.
+ *
+ * @package    peerfollow
+ * @subpackage form
+ * @author     Your name here
+ * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
+ */
+class BasePersonForm extends BaseFormPropel
+{
+  public function setup()
+  {
+    $this->setWidgets(array(
+      'id'           => new sfWidgetFormInputHidden(),
+      'username'     => new sfWidgetFormInput(),
+      'bio'          => new sfWidgetFormTextarea(),
+      'image'        => new sfWidgetFormTextarea(),
+      'no_followers' => new sfWidgetFormInput(),
+      'fullname'     => new sfWidgetFormInput(),
+      'website'      => new sfWidgetFormTextarea(),
+    ));
+
+    $this->setValidators(array(
+      'id'           => new sfValidatorPropelChoice(array('model' => 'Person', 'column' => 'id', 'required' => false)),
+      'username'     => new sfValidatorString(array('max_length' => 64)),
+      'bio'          => new sfValidatorString(array('required' => false)),
+      'image'        => new sfValidatorString(array('required' => false)),
+      'no_followers' => new sfValidatorInteger(array('required' => false)),
+      'fullname'     => new sfValidatorString(array('max_length' => 255, 'required' => false)),
+      'website'      => new sfValidatorString(array('required' => false)),
+    ));
+
+    $this->validatorSchema->setPostValidator(
+      new sfValidatorPropelUnique(array('model' => 'Person', 'column' => array('username')))
+    );
+
+    $this->widgetSchema->setNameFormat('person[%s]');
+
+    $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
+
+    parent::setup();
+  }
+
+  public function getModelName()
+  {
+    return 'Person';
+  }
+
+
+}
