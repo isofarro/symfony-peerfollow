@@ -1,0 +1,10 @@
+
+
+# Ignore editing backups
+*~
+
+# Ignore symfony cache and logging directories
+
+cache/*
+log/*
+

@@ -1,0 +1,21 @@
+    # Be sure to only have this line once in your configuration
+    NameVirtualHost 127.0.0.1:80
+
+    # This is the configuration for peerfollow
+    Listen 127.0.0.1:80
+
+    <VirtualHost 127.0.0.1:80>
+      ServerName peerfollow.localhost
+      DocumentRoot "/home/user/projects/symfony-peerfollow/web"
+      DirectoryIndex index.php
+      <Directory "/home/user/projects/symfony-peerfollow/web">
+        AllowOverride All
+        Allow from All
+      </Directory>
+
+      Alias /sf ""
+      <Directory "">
+        AllowOverride All
+        Allow from All
+      </Directory>
+    </VirtualHost>
