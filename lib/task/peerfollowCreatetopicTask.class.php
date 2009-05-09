@@ -54,7 +54,11 @@ EOF;
 		foreach($people as $personObj) {
 
 			// Check whether this person already exists
-			$personCriteria->add(PersonPeer::USERNAME, $personObj->username);
+			$personCriteria->add(
+				PersonPeer::USERNAME, 
+				$personObj->username, 
+				Criteria::EQUAL
+			);
 			$num = PersonPeer::doCount($personCriteria);
 		
 			if ($num>0) {
