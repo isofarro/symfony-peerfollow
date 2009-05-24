@@ -23,23 +23,8 @@ class TopicManager {
 	}
 
 
-	public function calculateLinks($relations) {
-		$links = array();
-		
-		foreach($relations as $relation) {
-			$from = $relation->getPersonId();
-			$to   = $relation->getFollowingId();
-			
-			if (empty($links[$from])) {
-				$links[$from] = array();
-			}
-			if (empty($links[$from][$to])) {
-				$links[$from][$to] = 0;
-			}
-			$links[$from][$to] = 1;
-		}
-	
-		return $links;
+	public function calculateLinks($citizens, $followers) {
+
 	}
 }
 

@@ -35,14 +35,41 @@ EOF;
  		$connection = $databaseManager->getDatabase($options['connection'] ? $options['connection'] : null)->getConnection();
 
 		// add your code here
-		$topic = $arguments['topic'];
+		$topic   = $arguments['topic'];
+		$topicId = TopicPeer::getTopicId($topic);
+		echo "Topic    : {$topic} ({$topicId})\n";
+
+		$citizenList = PersonPeer::getTopicCitizens($topicId);
 		
-		// Get all the relationships in a topic
-		$relations = RelationPeer::doSelect(new Criteria());
-		
+		$citizens    = array();
+		$citizenKeys = array();
+		foreach($citizenList as $citizen) {
+			//echo $citizen->getUsername(), ', ';
+			$citizenObj = (object) NULL;
+			$citizenObj->username  = $citizen->getUsername();
+			$citizenObj->followers = array();
+			$citizenObj->friends   = array();
+			
+			$citizens[$citizen->getId()] = $citizenObj;
+			$citizenKeys[]               = $citizen->getId();
+		}
+		//print_r($citizenList);
+		echo 'Citizens : ', count($citizens), "\n";
+
+		// TODO: Is friends a duplication of followers if limited to community?
+		//$friends   = RelationPeer::getCommunityFriends($topicId, $citizenKeys);
+		//echo 'Friends  : ', count($friends), "\n";
+
+		$followers = RelationPeer::getCommunityFollowers($topicId, $citizenKeys);
+		echo 'Followers: ', count($followers), "\n";
+
+
+/****
 		$manager = new TopicManager();
-		
-		$links = $manager->calculateLinks($relations);
+		$links = $manager->calculateLinks($citizens, $followers);
+****/
+
+/****
 		//print_r($links);
 		
 		foreach($links as $from=>$fromLinks) {
@@ -52,6 +79,7 @@ EOF;
 			}
 			echo "\n";
 		}
+****/
   }
 
 }
