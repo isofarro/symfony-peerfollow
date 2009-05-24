@@ -84,7 +84,12 @@ EOF;
 			$person->stats     = (object) NULL;
 			$person->stats->followers = count($relList['followers']);
 			$person->stats->following = count($relList['following']);
-			
+
+			// For peer rank calculations
+			$person->calc        = (object) NULL;
+			$person->calc->rank  = 0;
+			$person->calc->accum = 0;
+
 			sort($person->followers);
 			sort($person->following);
 
@@ -126,7 +131,7 @@ EOF;
 				echo "\n";
 			}
 							
-			$community[] = $person;
+			$community[$person->id] = $person;
 		}
 
 		/**
@@ -134,6 +139,10 @@ EOF;
 			$community is an array of people,
 			$citizenKey is an array of peopleIds (for later sorting)
 		**/
+		
+		// Serialise this data to a file, for development.
+		$ser = serialize($community);
+		file_put_contents('/home/user/data/peerfollow/community.ser', $ser);
   }
 
 }
