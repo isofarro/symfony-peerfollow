@@ -43,15 +43,18 @@ EOF;
 		
 		$citizens    = array();
 		$citizenKeys = array();
+		$keyIdx      = 0;
 		foreach($citizenList as $citizen) {
 			//echo $citizen->getUsername(), ', ';
 			$citizenObj = (object) NULL;
 			$citizenObj->username  = $citizen->getUsername();
 			$citizenObj->followers = array();
 			$citizenObj->friends   = array();
+			$citizenObj->key       = $keyIdx;
 			
 			$citizens[$citizen->getId()] = $citizenObj;
-			$citizenKeys[]               = $citizen->getId();
+			$citizenKeys[$keyIdx]        = $citizen->getId();
+			$keyIdx++;
 		}
 		//print_r($citizenList);
 		echo 'Citizens : ', count($citizens), "\n";
@@ -67,36 +70,57 @@ EOF;
 		$manager = new TopicManager();
 		$links = $manager->calculateLinks($followers);
 		//print_r($links);
+		$community = array();
 
 		foreach($links as $rel=>$relList) {
-			echo str_pad($citizens[$rel]->username, 16), ': ';
-
-			$followers = count($relList['followers']);
-			$following = count($relList['following']);
-			$ratio = '++';
-			if ($following!==0) {
-				$ratio     = (int)(100 * $followers / $following);
-			}
+			$person = (object) NULL;
+			$person->id        = $rel;
+			$person->username  = $citizens[$rel]->username;
+			$person->followers = $relList['followers']; 
+			$person->following = $relList['following']; 
+			$person->stats     = (object) NULL;
 			
-			echo str_pad($followers, 4, ' ', STR_PAD_LEFT), ' ';
-			echo str_pad($following, 4, ' ', STR_PAD_LEFT), ' ';
-			echo 'In-Score: ', $ratio, "\n\t";
+			sort($person->followers);
+			sort($person->following);
 
-/****			
-			echo 'Follows    : ';
-			foreach($relList['followers'] as $fid) {
-				$citizen = $citizens[$fid]->username;
-				echo $citizen, ', ';
+			$person->stats->followers = count($relList['followers']);
+			$person->stats->following = count($relList['following']);
+			$ratio = '++';
+			if ($person->stats->following!==0) {
+				$ratio = (int)(100 * $person->stats->followers / $person->stats->following);
+			} else {
+				$ratio = $person->stats->followers;
 			}
-			echo "\n";
-****/			
 
-			echo 'Followed by: ';
-			foreach($relList['followers'] as $fid) {
-				$citizen = $citizens[$fid]->username;
-				echo $citizen, ', ';
+			if ($ratio > 60 && $person->stats->followers > 3) {
+				echo str_pad($person->username, 16), ': ';
+
+				echo 'In:',   str_pad($person->stats->followers, 4, ' ', STR_PAD_LEFT), ' ';
+				echo 'Out: ', str_pad($person->stats->following, 4, ' ', STR_PAD_LEFT), ' ';
+				echo 'In-Score: ', $ratio, "\n";
+
+				if (!empty($person->followers)) {
+					echo "\tFollowed by: ";
+					foreach($person->followers as $fid) {
+						$citizen = $citizens[$fid]->username;
+						echo $citizen, ', ';
+					}
+					echo "\n";
+				}
+							
+				if (!empty($person->following)) {
+					echo "\tFollowing  : ";
+					foreach($person->following as $fid) {
+						$citizen = $citizens[$fid]->username;
+						echo $citizen, ', ';
+					}
+					echo "\n";
+				}
+
+				echo "\n";
 			}
-			echo "\n";
+							
+			$community[] = $person;
 		}
 
   }
