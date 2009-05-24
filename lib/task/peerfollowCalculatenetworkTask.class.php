@@ -34,11 +34,12 @@ EOF;
 		$databaseManager = new sfDatabaseManager($this->configuration);
  		$connection = $databaseManager->getDatabase($options['connection'] ? $options['connection'] : null)->getConnection();
 
-		// add your code here
+		// Get the topic id - this will save complicated joins in other queries
 		$topic   = $arguments['topic'];
 		$topicId = TopicPeer::getTopicId($topic);
 		echo "Topic    : {$topic} ({$topicId})\n";
 
+		// Returns all the people who have tagged themselves with the topic
 		$citizenList = PersonPeer::getTopicCitizens($topicId);
 		
 		$citizens    = array();
@@ -59,19 +60,21 @@ EOF;
 		//print_r($citizenList);
 		echo 'Citizens : ', count($citizens), "\n";
 
-		// TODO: Is friends a duplication of followers if limited to community?
-		//$friends   = RelationPeer::getCommunityFriends($topicId, $citizenKeys);
-		//echo 'Friends  : ', count($friends), "\n";
-
+		// Get all the followers inside the topic
 		$followers = RelationPeer::getCommunityFollowers($topicId, $citizenKeys);
 		echo 'Followers: ', count($followers), "\n";
 
 
 		$manager = new TopicManager();
+
+		// Maps all the relations into follower/following lists
 		$links = $manager->calculateLinks($followers);
 		//print_r($links);
+		
 		$community = array();
 
+		// Aggregate all the follower data with their respective people.
+		// and calculate some basic metrics for each person.
 		foreach($links as $rel=>$relList) {
 			$person = (object) NULL;
 			$person->id        = $rel;
@@ -79,12 +82,12 @@ EOF;
 			$person->followers = $relList['followers']; 
 			$person->following = $relList['following']; 
 			$person->stats     = (object) NULL;
+			$person->stats->followers = count($relList['followers']);
+			$person->stats->following = count($relList['following']);
 			
 			sort($person->followers);
 			sort($person->following);
 
-			$person->stats->followers = count($relList['followers']);
-			$person->stats->following = count($relList['following']);
 			$ratio = '++';
 			if ($person->stats->following!==0) {
 				$ratio = (int)(100 * $person->stats->followers / $person->stats->following);
@@ -95,10 +98,12 @@ EOF;
 			if ($ratio > 60 && $person->stats->followers > 3) {
 				echo str_pad($person->username, 16), ': ';
 
+				// Display simple metrics of the current person
 				echo 'In:',   str_pad($person->stats->followers, 4, ' ', STR_PAD_LEFT), ' ';
 				echo 'Out: ', str_pad($person->stats->following, 4, ' ', STR_PAD_LEFT), ' ';
 				echo 'In-Score: ', $ratio, "\n";
 
+				// Display who is following the current person
 				if (!empty($person->followers)) {
 					echo "\tFollowed by: ";
 					foreach($person->followers as $fid) {
@@ -108,6 +113,7 @@ EOF;
 					echo "\n";
 				}
 							
+				// Display who the current person is following
 				if (!empty($person->following)) {
 					echo "\tFollowing  : ";
 					foreach($person->following as $fid) {
@@ -123,6 +129,11 @@ EOF;
 			$community[] = $person;
 		}
 
+		/**
+			At this point:
+			$community is an array of people,
+			$citizenKey is an array of peopleIds (for later sorting)
+		**/
   }
 
 }
