@@ -23,8 +23,33 @@ class TopicManager {
 	}
 
 
-	public function calculateLinks($citizens, $followers) {
-
+	public function calculateLinks($relations) {
+		$links = array();
+		
+		foreach($relations as $relation) {
+			$from = $relation->getPersonId();
+			$to   = $relation->getFollowingId();
+			
+			// Increment following count
+			if (empty($links[$from])) {
+				$links[$from] = array(
+					'following' => array(),
+					'followers' => array()
+				);
+			}
+			$links[$from]['following'][] = $to;
+			
+			// Increment follower count
+			if (empty($links[$to])) {
+				$links[$to] = array(
+					'following' => array(),
+					'followers' => array()
+				);
+			}
+			$links[$to]['followers'][] = $from;
+		}
+	
+		return $links;
 	}
 }
 

@@ -64,22 +64,30 @@ EOF;
 		echo 'Followers: ', count($followers), "\n";
 
 
-/****
 		$manager = new TopicManager();
-		$links = $manager->calculateLinks($citizens, $followers);
-****/
-
-/****
+		$links = $manager->calculateLinks($followers);
 		//print_r($links);
-		
-		foreach($links as $from=>$fromLinks) {
-			echo "{$from}: ";
-			foreach($fromLinks as $to=>$value) {
-				echo $value;
+
+
+		foreach($links as $rel=>$relList) {
+			echo str_pad($citizens[$rel]->username, 16), ': ';
+
+			$followers = count($relList['followers']);
+			$following = count($relList['following']);
+			$ratio = 0;
+			if ($following!==0) {
+				$ratio     = (float) $followers / $following;
 			}
+			
+			echo str_pad($followers, 4, ' ', STR_PAD_LEFT), ' ';
+			echo str_pad($following, 4, ' ', STR_PAD_LEFT), ' ';
+			echo 'Score: ', $ratio;
+//			foreach($fromLinks as $to=>$value) {
+//				echo $value;
+//			}
 			echo "\n";
 		}
-****/
+
   }
 
 }
