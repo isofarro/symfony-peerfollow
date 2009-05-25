@@ -54,13 +54,15 @@ class TopicManager {
 	
 	public function calculateCommunityRank($community, $start=1000, $min=1) {
 		// TODO: Add the start capital to the first node
+/**
 		$first = reset($community);
 		if($first && $start) {
 			$first->calc->accum = $start;
 		}
+**/
 
 		$changed = $this->iterateRank($community, $min);
-		$limit   = 10;
+		$limit   = 50;
 		while ($limit && $changed) {
 			$limit--;
 			if ($limit) {
@@ -70,11 +72,12 @@ class TopicManager {
 		}
 	}
 
-	protected function iterateRank($community, $min=1, $gravity=20) {
+	protected function iterateRank($community, $min=1, $gravity=15) {
 		$hasChanged = false;
 		$maxBonus   = 0;
 		$inertia    = 100 - $gravity;
-		
+		$totalNodes = count($community);
+		$otherNodes = $totalNodes - 1;
 		$personKeys = array_keys($community);
 		echo '[';
 		foreach($personKeys as $key) {
@@ -98,9 +101,11 @@ class TopicManager {
 							$community[$followerId]->calc->accum += $bonus;
 						}
 						echo '+'; //, $bonus;
+					} else {
+						echo '.';
 					}
 				} else {
-					$bonus = round($inertia * $person->calc->accum / 100 / 25);
+					$bonus = round($person->calc->accum * $inertia / 100 / $otherNodes);
 					if ($bonus >= $min) {
 						$hasChanged = true;
 						// Spread the bonus to every other node
@@ -112,6 +117,8 @@ class TopicManager {
 						}
 						reset($community);
 						echo '*'; //, $bonus;
+					} else {
+						echo '.';
 					}
 				}
 
