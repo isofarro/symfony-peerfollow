@@ -15,10 +15,13 @@ $manager = new TopicManager();
 
 $manager->calculateCommunityRank($community);
 
-/****
+//****
+$karmaTotal = 0;
 foreach($community as $person) {
 	echo str_pad($person->username, 16), ': ', $person->calc->rank, "\n";
+	$karmaTotal += $person->calc->rank;
 }
-****/
+echo "Karma total: {$karmaTotal} ~ ", (int)($karmaTotal / count($community)), "\n";
+//****/
 
 ?>

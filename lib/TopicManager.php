@@ -53,23 +53,20 @@ class TopicManager {
 	}
 	
 	public function calculateCommunityRank($community, $start=1000, $min=1) {
-		// TODO: Add the start capital to the first node
-/**
-		$first = reset($community);
-		if($first && $start) {
-			$first->calc->accum = $start;
-		}
-**/
 
 		$changed = $this->iterateRank($community, $min);
 		$limit   = 50;
+		$iterations = 1;
+		
 		while ($limit && $changed) {
 			$limit--;
 			if ($limit) {
 				//echo "The flow has changed a rank\n";
 				$changed = $this->iterateRank($community, $min);
+				$iterations++;
 			}
 		}
+		echo "Iterations: {$iterations}\n";
 	}
 
 	protected function iterateRank($community, $min=1, $gravity=15) {
@@ -80,11 +77,13 @@ class TopicManager {
 		$otherNodes = $totalNodes - 1;
 		$personKeys = array_keys($community);
 		echo '[';
+
 		foreach($personKeys as $key) {
 			$person = $community[$key];
 			if ($person->calc->accum >= $min) {
 				//echo "$key: {$person->username} = {$person->calc->accum}\n";
-				$person->calc->rank += round($person->calc->accum * $gravity / 100);
+				$damp = round($person->calc->accum * $gravity / 100);
+				$person->calc->rank += $damp;
 				$totalOut = $person->stats->following;
 				//echo "[$totalOut]";
 
@@ -101,8 +100,10 @@ class TopicManager {
 							$community[$followerId]->calc->accum += $bonus;
 						}
 						echo '+'; //, $bonus;
+						//$person->calc->accum = 0;
 					} else {
 						echo '.';
+						//$person->calc->accum -= $damp;
 					}
 				} else {
 					$bonus = round($person->calc->accum * $inertia / 100 / $otherNodes);
@@ -117,12 +118,15 @@ class TopicManager {
 						}
 						reset($community);
 						echo '*'; //, $bonus;
+						//$person->calc->accum = 0;
 					} else {
 						echo '.';
+						//$person->calc->accum -= $damp;
 					}
 				}
 
 				$person->calc->accum = 0;
+
 				
 			} else {
 				echo '.';
@@ -131,6 +135,39 @@ class TopicManager {
 		}
 		echo "]({$maxBonus})\n";
 		return $hasChanged;
+	}
+	
+	
+	public function renderGraphML($topic, $community) {
+		$nodeBuffer = array();
+		$edgeBuffer = array();
+
+		foreach($community as $person) {
+			$nodeBuffer[] = <<<XML
+<node id="user-{$person->id}" />		
+XML;
+			foreach($person->following as $following) {
+				$edgeBuffer[] = <<<XML
+<edge source="user-{$person->id}" target="user-{$following}" />
+XML;
+			}
+			
+		}
+
+
+		$nodes = implode("\n\t\t", $nodeBuffer);
+		$edges = implode("\n\t\t", $edgeBuffer);
+		$xml = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">	
+	<graph id="topic-{$topic}" edgedefault="directed">
+		{$nodes}
+
+		{$edges}
+	</graph>
+</graphml>
+XML;
+		return $xml;
 	}
 }
 
