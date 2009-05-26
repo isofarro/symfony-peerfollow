@@ -200,6 +200,46 @@ class TopicManager {
 		sort($ids);
 		return implode(',', $ids);
 	}
+
+	public function generateGraphML($connections) {
+		$nodeBuffer = array();
+		$edgeBuffer = array();
+		
+		foreach($connections as $connection) {
+			list($to, $from) = explode(',', $connection);
+			
+			if (empty($nodeBuffer[$to])) {
+				$nodeBuffer[$to] = <<<XML
+<node id="user-{$to}" />
+XML;
+			}
+
+			if (empty($nodeBuffer[$from])) {
+				$nodeBuffer[$from] = <<<XML
+<node id="user-{$from}" />
+XML;
+			}
+			
+			$edgeBuffer[] = <<<XML
+<edge source="user-{$to}" target="user-{$from}" />
+XML;
+
+		}
+
+		$nodes = implode("\n\t\t", $nodeBuffer);
+		$edges = implode("\n\t\t", $edgeBuffer);
+		$xml = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">	
+	<graph id="topic-{$topic}" edgedefault="directed">
+		{$nodes}
+
+		{$edges}
+	</graph>
+</graphml>
+XML;
+		return $xml;
+	}
 	
 	public function renderGraphML($topic, $community) {
 		$nodeBuffer = array();
