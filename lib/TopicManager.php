@@ -137,6 +137,69 @@ class TopicManager {
 		return $hasChanged;
 	}
 	
+	public function processRelations($community) {
+		$relHash = array();
+		
+		foreach($community as $person) {
+			foreach($person->following as $following) {
+				$rel = array($person->id, $following);
+				$key1 = "{$person->id},{$following}";
+				$key2 = "{$following},{$person->id}";
+				
+				/**
+				 1 - first follows the second
+				 2 - second follows the first
+				 3 - both follow each other
+				**/				
+				
+				// Following
+				if (empty($relHash[$key1])) {
+					$relHash[$key1] = 1;
+				} else {
+					$relHash[$key1] += 1;
+				}
+
+				// Follower
+				if (empty($relHash[$key2])) {
+					$relHash[$key2] = 2;
+				} else {
+					$relHash[$key2] += 2;
+				}
+			}
+		}
+
+		// Sort data into groups
+		
+		$friends = array();
+		$followers = array();
+		$following = array();	
+
+		foreach($relHash as $rel=>$val) {
+			switch($val) {
+				case 1:
+					break;
+					$following[] = $rel;
+				case 2:
+					break;
+					$followers[] = $rel;
+				case 3:
+					// sort them to dedupe
+					$key = $this->sortRelationKey($rel);
+					$friends[$key] = 1;
+					break;
+				default:
+					break;
+			}
+		}
+	
+		return array_keys($friends);
+	}
+
+	protected function sortRelationKey($rel) {
+		$ids = explode(',', $rel);
+		sort($ids);
+		return implode(',', $ids);
+	}
 	
 	public function renderGraphML($topic, $community) {
 		$nodeBuffer = array();
