@@ -1,28 +1,57 @@
 <?php
 
 class Community {
-	static $FOLLOWER  = 1;
-	static $FOLLOWING = 2;
-	static $FRIEND    = 4;
+	const FOLLOWER  = 1;
+	const FOLLOWING = 2;
+	const FRIEND    = 4;
 
 	var $topic;
-	var $people;
+	var $people      = array();
+	var $peopleKeys  = array();
 	var $connections = array();
 
-	public function __construc($topic=false) {
+
+	public function __construct($topic=false) {
 		if ($topic) {
 			$this->setTopic($topic);
 		}
 	}
 
 	public function setTopic($topic) {
-		$this->topic = $topic;
+		if (is_a($topic, 'Topic')) {
+			$this->topic = $topic;
+			return true;
+		}
+		return false;
 	}
 	
 	public function getTopic() {
 		return $this->topic;
 	}
 
+	public function addPeople($people) {
+		//$this->people = array_merge($this->people, $people);
+		foreach($people as $person) {
+			$this->people[$person->getId()] = $person;
+			$this->peopleKeys[] = $person->getId();
+		}
+	}
+	
+	public function getPeopleKeys() {
+		return $this->peopleKeys;
+	}
+
+	public function addConnections($connections) {
+		if (is_array($connections)) {
+			foreach($connections as $connection) {
+				$this->addRelationship(
+					$connection->getPersonId(),
+					$connection->getFollowingId(),
+					self::FOLLOWING
+				);
+			}
+		}
+	}
 
 	// TODO: Getters, setters and aggregates for:
 	// topic, people, connections

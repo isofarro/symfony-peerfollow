@@ -3,11 +3,16 @@
 class TopicPeer extends BaseTopicPeer
 {
 
-	public function getTopicId($topic) {
+	public function getTopic($topicName) {
 		$topicCriteria = new Criteria();
-		$topicCriteria->add(TopicPeer::SLUG, $topic);
+		$topicCriteria->add(TopicPeer::SLUG, $topicName);
 		
-		$topic = TopicPeer::doSelectOne($topicCriteria);
+		return TopicPeer::doSelectOne($topicCriteria);
+	}
+
+	public function getTopicId($topicName) {
+		$topic = self::getTopic($topicName);
 		return $topic->getId();	
 	}
+
 }
