@@ -34,10 +34,15 @@ EOF;
 		$databaseManager = new sfDatabaseManager($this->configuration);
  		$connection = $databaseManager->getDatabase($options['connection'] ? $options['connection'] : null)->getConnection();
 
+		
+
 		// Get the topic id - this will save complicated joins in other queries
 		$topic   = $arguments['topic'];
 		$topicId = TopicPeer::getTopicId($topic);
 		echo "Topic    : {$topic} ({$topicId})\n";
+
+		$community = new Community($topic);
+
 
 		// Returns all the people who have tagged themselves with the topic
 		$citizenList = PersonPeer::getTopicCitizens($topicId);

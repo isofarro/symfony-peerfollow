@@ -9,6 +9,21 @@ class Community {
 	var $people;
 	var $connections = array();
 
+	public function __construc($topic=false) {
+		if ($topic) {
+			$this->setTopic($topic);
+		}
+	}
+
+	public function setTopic($topic) {
+		$this->topic = $topic;
+	}
+	
+	public function getTopic() {
+		return $this->topic;
+	}
+
+
 	// TODO: Getters, setters and aggregates for:
 	// topic, people, connections
 
