@@ -43,8 +43,8 @@ EOF;
     
 	foreach($people as $person) {
 		//echo " * ", $person->getUsername(), ': ', $person->getFullname(), "\n";
-		$friends = $twitter->getFollowers($person->getUsername());
-		$total = $this->_processFriends($person->getId(), $friends);
+		$following = $twitter->getFollowing($person->getUsername());
+		$total = $this->_processFollowing($person->getId(), $following);
 		
 		echo "\n* ", $person->getUsername(), ": added {$total} new relationships\n";
 		$person->setStatus('A');
@@ -57,20 +57,20 @@ EOF;
     }
   }
   
-  protected function _processFriends($person_id, $friends) {
+  protected function _processFollowing($person_id, $following) {
 		$personCriteria = new Criteria();
 		
 		$count = 0;
 		
-		foreach($friends as $friendObj) {
+		foreach($following as $followingObj) {
 			$personCriteria->add(
 				PersonPeer::USERNAME, 
-				$friendObj->username,
+				$followingObj->username,
 				Criteria::EQUAL
 			);
-			$friend = PersonPeer::doSelectOne($personCriteria);
+			$follower = PersonPeer::doSelectOne($personCriteria);
 			
-			if ($friend) {
+			if ($follower) {
 				$relationCriteria = new Criteria();
 				$relationCriteria->add(
 					RelationPeer::PERSON_ID,
@@ -79,7 +79,7 @@ EOF;
 				);
 				$relationCriteria->add(
 					RelationPeer::FOLLOWING_ID,
-					$friend->getId(),
+					$follower->getId(),
 					Criteria::EQUAL
 				);
 				$num = RelationPeer::doCount($relationCriteria);
@@ -87,7 +87,7 @@ EOF;
 				if ($num==0) {
 					$relation = new Relation();
 					$relation->setPersonId($person_id);
-					$relation->setPersonRelatedByFollowingId($friend);
+					$relation->setPersonRelatedByFollowingId($follower);
 					$relation->save();
 					$count++;
 				}				

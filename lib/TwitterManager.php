@@ -1,15 +1,16 @@
 <?php
 
 class TwitterManager {
-	// TODO: fix symfony task to get Friends.
-	public function getFollowers($username) {
-		echo "Getting twitter followers for {$username}\n";
+
+	public function getFollowing($username) {
+		echo "Getting people {$username} is following\n";
 		
 		$api = new TwitterApi();
 
-		$friends	= $api->getFriends($username);
+		// TODO: Correct Twitter API method name: getFollowing($username);
+		$following	= $api->getFriends($username);
 		
-		return $friends;
+		return $following;
 	}
 
 }

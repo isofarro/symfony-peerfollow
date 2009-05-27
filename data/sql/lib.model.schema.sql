@@ -112,6 +112,11 @@ CREATE TABLE `topicPerson`
 (
 	`person_id` INTEGER  NOT NULL,
 	`topic_id` INTEGER  NOT NULL,
+	`rank` INTEGER default 0,
+	`followers` INTEGER default 0,
+	`following` INTEGER default 0,
+	`friends` INTEGER default 0,
+	`updated_at` DATETIME,
 	`id` INTEGER  NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY (`id`),
 	INDEX `topicPerson_FI_1` (`person_id`),

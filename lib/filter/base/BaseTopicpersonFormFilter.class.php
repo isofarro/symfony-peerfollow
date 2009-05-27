@@ -15,13 +15,23 @@ class BaseTopicpersonFormFilter extends BaseFormFilterPropel
   public function setup()
   {
     $this->setWidgets(array(
-      'person_id' => new sfWidgetFormPropelChoice(array('model' => 'Person', 'add_empty' => true)),
-      'topic_id'  => new sfWidgetFormPropelChoice(array('model' => 'Topic', 'add_empty' => true)),
+      'person_id'  => new sfWidgetFormPropelChoice(array('model' => 'Person', 'add_empty' => true)),
+      'topic_id'   => new sfWidgetFormPropelChoice(array('model' => 'Topic', 'add_empty' => true)),
+      'rank'       => new sfWidgetFormFilterInput(),
+      'followers'  => new sfWidgetFormFilterInput(),
+      'following'  => new sfWidgetFormFilterInput(),
+      'friends'    => new sfWidgetFormFilterInput(),
+      'updated_at' => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => true)),
     ));
 
     $this->setValidators(array(
-      'person_id' => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Person', 'column' => 'id')),
-      'topic_id'  => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Topic', 'column' => 'id')),
+      'person_id'  => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Person', 'column' => 'id')),
+      'topic_id'   => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Topic', 'column' => 'id')),
+      'rank'       => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'followers'  => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'following'  => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'friends'    => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'updated_at' => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
     ));
 
     $this->widgetSchema->setNameFormat('topicperson_filters[%s]');
@@ -39,9 +49,14 @@ class BaseTopicpersonFormFilter extends BaseFormFilterPropel
   public function getFields()
   {
     return array(
-      'person_id' => 'ForeignKey',
-      'topic_id'  => 'ForeignKey',
-      'id'        => 'Number',
+      'person_id'  => 'ForeignKey',
+      'topic_id'   => 'ForeignKey',
+      'rank'       => 'Number',
+      'followers'  => 'Number',
+      'following'  => 'Number',
+      'friends'    => 'Number',
+      'updated_at' => 'Date',
+      'id'         => 'Number',
     );
   }
 }

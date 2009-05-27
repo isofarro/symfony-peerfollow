@@ -3,10 +3,14 @@
 class Community {
 	static $FOLLOWER  = 1;
 	static $FOLLOWING = 2;
+	static $FRIEND    = 4;
 
-	var $name;
+	var $topic;
 	var $people;
 	var $connections = array();
+
+	// TODO: Getters, setters and aggregates for:
+	// topic, people, connections
 
 	public function isFollowing($person1, $person2) {
 	

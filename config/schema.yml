@@ -27,6 +27,11 @@ propel:
     slug: { type: varchar(64), required: true, index: unique }
     
   topicPerson:
-    person_id: { type: integer, foreignTable: person, foreignReference: id, required: true }
-    topic_id:  { type: integer, foreignTable: topic,  foreignReference: id, required: true }
-
+    person_id:  { type: integer, foreignTable: person, foreignReference: id, required: true }
+    topic_id:   { type: integer, foreignTable: topic,  foreignReference: id, required: true }
+    rank:       { type: integer, default 0 }
+    followers:  { type: integer, default 0 }
+    following:  { type: integer, default 0 }
+    friends:    { type: integer, default 0 }
+    updated_at: { type: timestamp }
+    
