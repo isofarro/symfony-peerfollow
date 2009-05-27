@@ -53,19 +53,19 @@ class Community {
 		}
 	}
 
-	// TODO: Getters, setters and aggregates for:
-	// topic, people, connections
-
 	public function isFollowing($person1, $person2) {
-	
+		return (!empty($this->connections[$person1][$person2]));
 	}
 	
 	public function isFollowedBy($person1, $person2) {
-	
+		return (!empty($this->connections[$person2][$person1]));
 	}
 	
 	public function areFriends($person1, $person2) {
-	
+		return (
+			!empty($this->connections[$person1][$person2]) &&
+			!empty($this->connections[$person2][$person1])
+		);
 	}
 
 
