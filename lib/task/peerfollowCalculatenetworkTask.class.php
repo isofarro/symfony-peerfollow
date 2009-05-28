@@ -68,7 +68,44 @@ EOF;
 		$ser = serialize($community);
 		file_put_contents('/home/user/data/peerfollow/community-obj.ser', $ser);
 
-		print_r($community->network);
+		//print_r($community->network);
+
+		$manager = new TopicManager();
+		$manager->calculateNetworkRank($community->network);
+
+		$this->displayResults($community->network);
+
+	}
+
+
+	public function displayResults($network) {
+		$karmaTotal = 0;
+		$ranked = array();
+
+		foreach($network as $node) {
+			$karmaTotal += $node->rank;
+			
+			if (empty($ranked[$node->rank])) {
+				$ranked[$node->rank] = array();
+			}
+			$ranked[$node->rank][] = $node->nodeId;
+		}
+		
+		echo "Karma total: {$karmaTotal} ~ ", 
+			(int)($karmaTotal / count($network)), "\n";
+
+		krsort($ranked, SORT_NUMERIC);
+		echo "\n";
+		foreach ($ranked as $key=>$list) {
+			$people = array();
+			foreach($list as $citizenId) {
+				$people[] = $network[$citizenId]->name;
+			}
+	
+			echo str_pad($key, 5, ' ', STR_PAD_LEFT), ' ',
+				implode(', ', $people), "\n";
+		}
+	
 	}
 
 }
