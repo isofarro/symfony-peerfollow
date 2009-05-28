@@ -2,32 +2,32 @@
 
 class peerfollowCalculatenetworkTask extends sfBaseTask
 {
-  protected function configure()
-  {
-    // // add your own arguments here
-    // $this->addArguments(array(
-    //   new sfCommandArgument('my_arg', sfCommandArgument::REQUIRED, 'My argument'),
-    // ));
+	protected function configure() {
+		// // add your own arguments here
+		// $this->addArguments(array(
+		//   new sfCommandArgument('my_arg', sfCommandArgument::REQUIRED, 'My argument'),
+		// ));
 
-    $this->addOptions(array(
-      new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
-      new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
-      new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'propel'),
-      // add your own options here
-    ));
+		$this->addOptions(array(
+			new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
+			new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
+			new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'propel'),
+			// add your own options here
+		));
 
-    $this->namespace        = 'peerfollow';
-    $this->name             = 'calculate-network';
-    $this->briefDescription = '';
-    $this->detailedDescription = <<<EOF
-The [peerfollow:calculate-network|INFO] task does things.
+		$this->namespace        = 'peerfollow';
+		$this->name             = 'calculate-network';
+		$this->briefDescription = '';
+		$this->detailedDescription = <<<EOF
+The [peerfollow:calculate-network|INFO] calculates the peer rank for all 
+people in the selected network, or community.
 Call it with:
 
-  [php symfony peerfollow:calculate-network|INFO]
+  [php symfony peerfollow:calculate-network community-name|INFO] 
 EOF;
 
 		$this->addArgument('topic', sfCommandArgument::REQUIRED, 'The topic to create');
-  }
+	}
 
 	protected function execute($arguments = array(), $options = array()) {
 		// initialize the database connection
