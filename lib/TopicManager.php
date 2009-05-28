@@ -19,9 +19,91 @@ class TopicManager {
 		//print_r($people);
 		return $people;	
 	}
+	
+	public function calculateNetworkRank($network, $min=1) {
+		$maxIterations = 50;
+		$iterations    = 0;
+		
+		$changed = $this->iterateRank($network, $min);
+		$iterations++;
 
+		while ($iterations < $maxIterations && $changed) {
+			$changed = $this->iterateRank($network, $min);
+			$iterations++;
+		}
 
-	public function calculateCommunityRank($community, $start=1000, $min=1) {
+		echo "Iterations: {$iterations}\n";
+	}
+
+	protected function iterateRank($network, $min=1, $gravity=15) {
+		$hasChanged = false;
+		$maxBonus   = 0;
+		$inertia    = 100 - $gravity;
+		$totalNodes = count($network);
+		$otherNodes = $totalNodes - 1;
+		$nodeIds    = array_keys($network);
+		echo '[';
+
+		foreach($nodeIds as $nodeId) {
+			$node = $network[$nodeId];
+			if ($node->accum >= $min) {
+				//echo "$key: {$person->username} = {$person->calc->accum}\n";
+				$damp = round($node->accum * $gravity / 100);
+				$node->rank += $damp;
+				$totalOut = count($node->edges);
+				//echo "[$totalOut]";
+
+				if ($totalOut>0) {
+					$bonus = round($node->accum * $inertia / 100 / $totalOut);
+					//echo "($bonus)";
+					if ($bonus >= $min) {
+						$hasChanged = true;
+						if ($bonus > $maxBonus) {
+							$maxBonus = $bonus;
+						}
+						reset($network);
+						foreach($node->edges as $outNodeId) {
+							$network[$outNodeId]->accum += $bonus;
+						}
+						echo '+'; //, $bonus;
+						//$person->calc->accum = 0;
+					} else {
+						echo '.';
+						//$person->calc->accum -= $damp;
+					}
+				} else {
+					$bonus = round($node->accum * $inertia / 100 / $otherNodes);
+					if ($bonus >= $min) {
+						$hasChanged = true;
+						// Spread the bonus to every other node
+						reset($network);
+						foreach($network as $outNodeId=>$outNode) {
+							if ($outNodeId != $node->nodeId) {
+								$network[$outNodeId]->accum += $bonus;
+							}
+						}
+						reset($network);
+						echo '*'; //, $bonus;
+						//$person->calc->accum = 0;
+					} else {
+						echo '.';
+					}
+				}
+
+				$node->accum = 0;
+
+				
+			} else {
+				echo '.';
+			}
+			//break;
+		}
+		echo "]({$maxBonus})\n";
+		return $hasChanged;
+	
+	}
+
+	public function XXXcalculateCommunityRank($community, $start=1000, $min=1) {
 
 		$changed = $this->iterateRank($community, $min);
 		$limit   = 50;
@@ -38,7 +120,7 @@ class TopicManager {
 		echo "Iterations: {$iterations}\n";
 	}
 
-	protected function iterateRank($community, $min=1, $gravity=15) {
+	protected function XXXiterateRank($community, $min=1, $gravity=15) {
 		$hasChanged = false;
 		$maxBonus   = 0;
 		$inertia    = 100 - $gravity;

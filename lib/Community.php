@@ -10,6 +10,9 @@ class Community {
 	var $peopleKeys  = array();
 	var $connections = array();
 
+	// For network set calculations
+	var $network = array();
+	
 
 	public function __construct($topic=false) {
 		if ($topic) {
@@ -34,6 +37,7 @@ class Community {
 		foreach($people as $person) {
 			$this->people[$person->getId()] = $person;
 			$this->peopleKeys[] = $person->getId();
+			$this->network[$person->getId()] = $this->createNode($person, 1000);
 		}
 	}
 	
@@ -91,7 +95,30 @@ class Community {
 			$this->connections[$person1] = array();
 		}
 		$this->connections[$person1][$person2] = 1;
+		
+		if (!empty($this->network[$person1])) {
+			$this->network[$person1]->edges[] = $person2;
+		} else {
+			echo "WARN: No network node for {$person1}\n";
+		}
+ 	}
+	
+	protected function createNode($person, $bonus = 0) {
+		$node = new Node();
+		
+		$node->nodeId = $person->getId();
+		$node->accum  += $bonus;
+		
+		return $node;
 	}
+}
+
+class Node {
+	var $nodeId = 0;
+	var $rank   = 0;
+	var $accum  = 0;
+
+	var $edges  = array();
 }
 
 ?>

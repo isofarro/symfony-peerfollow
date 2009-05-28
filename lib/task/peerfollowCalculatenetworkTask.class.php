@@ -68,7 +68,7 @@ EOF;
 		$ser = serialize($community);
 		file_put_contents('/home/user/data/peerfollow/community-obj.ser', $ser);
 
-		//print_r($community);
+		print_r($community->network);
 	}
 
 }
