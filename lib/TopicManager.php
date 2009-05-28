@@ -91,8 +91,6 @@ class TopicManager {
 				}
 
 				$node->accum = 0;
-
-				
 			} else {
 				echo '.';
 			}
@@ -102,7 +100,7 @@ class TopicManager {
 		return $hasChanged;
 	
 	}
-
+/********
 	public function XXXcalculateCommunityRank($community, $start=1000, $min=1) {
 
 		$changed = $this->iterateRank($community, $min);
@@ -187,6 +185,7 @@ class TopicManager {
 		echo "]({$maxBonus})\n";
 		return $hasChanged;
 	}
+********/
 	
 	public function processRelations($community) {
 		$relHash = array();

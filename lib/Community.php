@@ -45,6 +45,10 @@ class Community {
 		return $this->peopleKeys;
 	}
 
+	public function getPerson($key) {
+		return $this->people[$key];
+	}
+
 	public function addConnections($connections) {
 		if (is_array($connections)) {
 			foreach($connections as $connection) {
@@ -107,6 +111,7 @@ class Community {
 		$node = new Node();
 		
 		$node->nodeId = $person->getId();
+		$node->name   = $person->getUsername();
 		$node->accum  += $bonus;
 		
 		return $node;
@@ -115,6 +120,7 @@ class Community {
 
 class Node {
 	var $nodeId = 0;
+	var $name   = '';
 	var $rank   = 0;
 	var $accum  = 0;
 
