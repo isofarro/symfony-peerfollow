@@ -1,6 +1,6 @@
 <?php
 
-require_once 'TopicManager.php';
+require_once 'CommunityManager.php';
 require_once 'Community.php';
 
 $ser = file_get_contents('/home/user/data/peerfollow/community-obj.ser');
@@ -8,7 +8,7 @@ $community = unserialize($ser);
 
 //print_r($community->network);
 
-$manager = new TopicManager();
+$manager = new CommunityManager();
 $manager->calculateNetworkRank($community->network);
 
 $karmaTotal = 0;

@@ -47,7 +47,7 @@ EOF;
 
 		//print_r($community->network);
 
-		$manager = new TopicManager();
+		$manager = new CommunityManager();
 		$manager->calculateNetworkRank($community->network);
 
 		$this->displayResults($community->network);

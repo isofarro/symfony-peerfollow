@@ -1,7 +1,6 @@
 <?php
 
-// TODO: rename to CommunityManager
-class TopicManager {
+class CommunityManager {
 
 	/**
 	* Gets all the people from wefollow.com who have tagged

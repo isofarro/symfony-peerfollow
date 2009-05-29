@@ -1,6 +1,6 @@
 <?php
 
-require_once 'TopicManager.php';
+require_once 'CommunityManager.php';
 
 $serFile = '/home/user/data/peerfollow/community.ser';
 $xmlFile = '/home/user/data/peerfollow/community-friends.xml';
@@ -8,7 +8,7 @@ $xmlFile = '/home/user/data/peerfollow/community-friends.xml';
 $ser = file_get_contents($serFile);
 $community = unserialize($ser);
 
-$manager = new TopicManager();
+$manager = new CommunityManager();
 $rel = $manager->processRelations($community);
 
 //print_r($rel);

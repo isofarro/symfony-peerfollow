@@ -43,7 +43,7 @@ EOF;
 		$topicObj->save();
 		
 		
-		$manager = new TopicManager();
+		$manager = new CommunityManager();
 		
 		$people = $manager->getSelfTaggers($topic);
 		
