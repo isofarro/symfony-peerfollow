@@ -1,14 +1,23 @@
 <?php
 
+// TODO: rename to CommunityManager
 class TopicManager {
 
+	/**
+	* Gets all the people from wefollow.com who have tagged
+	* themselves with the specified topic name
+	*
+	* @param String - topic tag
+	* @returns Array of people data objects
+	**/
 	public function getSelfTaggers($topic) {
 		echo "Getting self-taggers: $topic\n";
 		
-		$api = new WeFollowApi();
+		$api    = new WeFollowApi();
 		$people = array();
 		
-		$page = $api->getTaggedPeople($topic);
+		// TODO: Condense this into one helper method call
+		$page   = $api->getTaggedPeople($topic);
 		$people = array_merge($people, $page);
 		
 		while($api->hasNext()) {
@@ -19,9 +28,17 @@ class TopicManager {
 		//print_r($people);
 		return $people;	
 	}
-	
-	public function calculateNetworkRank($network, $min=1) {
-		$maxIterations = 50;
+
+	/**
+	* Calculates the network rank of each of the members of the community
+	* 
+	* @param network - an array of Node objects
+	* @param min - minimum accumulated bonus to pass on (optional, default 1)
+	* @returns nothing - the Array of objects passed contains the results
+	**/
+	public function calculateNetworkRank($network, $min=1, $maxIterations=50) {
+		// TODO: Refactor this to allow variations on passing rank
+		// PageRank: hold 15% pass on 85% equally to all outbound links
 		$iterations    = 0;
 		
 		$changed = $this->iterateRank($network, $min);
@@ -35,7 +52,17 @@ class TopicManager {
 		echo "Iterations: {$iterations}\n";
 	}
 
+	/**
+	* Iterates through a set of nodes applying the rank algorithm
+	* @param network - an array of Nodes
+	* @param min - the minimum rank to pass (optional, default 1)
+	* @param gravity - the percentage of rank to hold onto (optional, default 15)
+	*
+	* @returns nothing - the changes are reflected in the network array
+	**/
 	protected function iterateRank($network, $min=1, $gravity=15) {
+		// TODO: prevent the leak of rank when under the minimum	
+	
 		$hasChanged = false;
 		$maxBonus   = 0;
 		$inertia    = 100 - $gravity;
@@ -47,7 +74,9 @@ class TopicManager {
 		foreach($nodeIds as $nodeId) {
 			$node = $network[$nodeId];
 			if ($node->accum >= $min) {
-				//echo "$key: {$person->username} = {$person->calc->accum}\n";
+				// TODO: Refactor this into a variable method name
+				//       1.) calculates the rank to pass per node
+				//       2.) deals with nodes with no outbound connections
 				$damp = round($node->accum * $gravity / 100);
 				$node->rank += $damp;
 				$totalOut = count($node->edges);
