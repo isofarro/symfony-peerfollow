@@ -50,7 +50,7 @@ EOF;
 		$manager = new TopicManager();
 		$manager->calculateNetworkRank($community->network);
 
-		//$this->displayResults($community->network);
+		$this->displayResults($community->network);
 
 	}
 

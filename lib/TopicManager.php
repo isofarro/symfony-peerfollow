@@ -62,6 +62,7 @@ class TopicManager {
 	**/
 	protected function iterateRank($network, $min=1, $gravity=15) {
 		// TODO: prevent the leak of rank when under the minimum	
+		// Need to keep track of the remainders.
 	
 		$hasChanged = false;
 		$maxBonus   = 0;
@@ -78,11 +79,12 @@ class TopicManager {
 				//       1.) calculates the rank to pass per node
 				//       2.) deals with nodes with no outbound connections
 				$damp = round($node->accum * $gravity / 100);
-				$node->rank += $damp;
+				$node->rank += $damp; // TODO: delay until rank has been passed
 				$totalOut = count($node->edges);
 				//echo "[$totalOut]";
 
 				if ($totalOut>0) {
+					// A node containing outbound edges
 					$bonus = round($node->accum * $inertia / 100 / $totalOut);
 					//echo "($bonus)";
 					if ($bonus >= $min) {
@@ -95,12 +97,14 @@ class TopicManager {
 							$network[$outNodeId]->accum += $bonus;
 						}
 						echo '+'; //, $bonus;
-						//$person->calc->accum = 0;
+						//$node->accum = 0;
 					} else {
 						echo '.';
-						//$person->calc->accum -= $damp;
+						//$node->accum -= $damp;
 					}
+					$node->accum = 0;
 				} else {
+					// A node with no outbound edges
 					$bonus = round($node->accum * $inertia / 100 / $otherNodes);
 					if ($bonus >= $min) {
 						$hasChanged = true;
@@ -113,13 +117,16 @@ class TopicManager {
 						}
 						reset($network);
 						echo '*'; //, $bonus;
-						//$person->calc->accum = 0;
+						//$node->accum = 0;
 					} else {
 						echo '.';
+						//$node->accum -= $damp;
+						// This rewards the dead-end multiple times when the
+						// reward is less than nodes-1
 					}
+					$node->accum = 0;
 				}
 
-				$node->accum = 0;
 			} else {
 				echo '.';
 			}
@@ -129,92 +136,6 @@ class TopicManager {
 		return $hasChanged;
 	
 	}
-/********
-	public function XXXcalculateCommunityRank($community, $start=1000, $min=1) {
-
-		$changed = $this->iterateRank($community, $min);
-		$limit   = 50;
-		$iterations = 1;
-		
-		while ($limit && $changed) {
-			$limit--;
-			if ($limit) {
-				//echo "The flow has changed a rank\n";
-				$changed = $this->iterateRank($community, $min);
-				$iterations++;
-			}
-		}
-		echo "Iterations: {$iterations}\n";
-	}
-
-	protected function XXXiterateRank($community, $min=1, $gravity=15) {
-		$hasChanged = false;
-		$maxBonus   = 0;
-		$inertia    = 100 - $gravity;
-		$totalNodes = count($community);
-		$otherNodes = $totalNodes - 1;
-		$personKeys = array_keys($community);
-		echo '[';
-
-		foreach($personKeys as $key) {
-			$person = $community[$key];
-			if ($person->calc->accum >= $min) {
-				//echo "$key: {$person->username} = {$person->calc->accum}\n";
-				$damp = round($person->calc->accum * $gravity / 100);
-				$person->calc->rank += $damp;
-				$totalOut = $person->stats->following;
-				//echo "[$totalOut]";
-
-				if ($totalOut>0) {
-					$bonus = round($person->calc->accum * $inertia / 100 / $totalOut);
-					//echo "($bonus)";
-					if ($bonus >= $min) {
-						$hasChanged = true;
-						if ($bonus > $maxBonus) {
-							$maxBonus = $bonus;
-						}
-						reset($community);
-						foreach($person->following as $fkey=>$followerId) {
-							$community[$followerId]->calc->accum += $bonus;
-						}
-						echo '+'; //, $bonus;
-						//$person->calc->accum = 0;
-					} else {
-						echo '.';
-						//$person->calc->accum -= $damp;
-					}
-				} else {
-					$bonus = round($person->calc->accum * $inertia / 100 / $otherNodes);
-					if ($bonus >= $min) {
-						$hasChanged = true;
-						// Spread the bonus to every other node
-						reset($community);
-						foreach($community as $fkey=>$follower) {
-							if ($fkey != $person->id) {
-								$community[$fkey]->calc->accum += $bonus;
-							}
-						}
-						reset($community);
-						echo '*'; //, $bonus;
-						//$person->calc->accum = 0;
-					} else {
-						echo '.';
-						//$person->calc->accum -= $damp;
-					}
-				}
-
-				$person->calc->accum = 0;
-
-				
-			} else {
-				echo '.';
-			}
-			//break;
-		}
-		echo "]({$maxBonus})\n";
-		return $hasChanged;
-	}
-********/
 	
 	public function processRelations($community) {
 		$relHash = array();
