@@ -57,6 +57,7 @@ $t->ok(!$community->isFollowing(4,3), 'isFollowing() returns false when no conne
 $t->ok(!$community->isFollowedBy(3,4), 'isFollowedBy() returns false when no connections exist between two people');
 $t->ok(!$community->isFollowedBy(4,3), 'isFollowedBy() returns false when no connections exist between two people');
 $t->ok(!$community->areFriends(3,4), 'areFriends() returns false when no connections exist between two people');
+$t->ok(!$community->areFriends(4,3), 'areFriends() returns false when no connections exist between two people');
 
 $t->diag('Adding in the mutual connection, one connection at a time');
 $ret = $community->addConnection(3, 4);
@@ -66,6 +67,17 @@ $t->ok($community->isFollowing(4,3), 'isFollowing() returns true when a person i
 $t->ok($community->isFollowedBy(3,4), 'isFollowedBy() returns true when a person is followed by another');
 $t->ok($community->isFollowedBy(4,3), 'isFollowedBy() returns true when a person is followed by another');
 $t->ok($community->areFriends(3,4), 'areFriends() returns true when two people are following each other');
+$t->ok($community->areFriends(4,3), 'areFriends() returns true when two people are following each other');
+
+$t->diag('addRelationship() adding a friend');
+$community->addRelationship(2,5, Community::FRIEND);
+$t->ok($community->isFollowing(2,5), 'isFollowing() returns true when a person is following another');
+$t->ok($community->isFollowing(5,2), 'isFollowing() returns true when a person is following another');
+$t->ok($community->isFollowedBy(2,5), 'isFollowedBy() returns true when a person is followed by another');
+$t->ok($community->isFollowedBy(5,2), 'isFollowedBy() returns true when a person is followed by another');
+$t->ok($community->areFriends(2,5), 'areFriends() returns true when two people are following each other');
+$t->ok($community->areFriends(5,2), 'areFriends() returns true when two people are following each other');
+
 
 
 

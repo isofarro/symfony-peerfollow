@@ -88,7 +88,7 @@ class Community {
 	}
 
 
-	protected function addRelationship($person1, $person2, $relationship) {
+	public function addRelationship($person1, $person2, $relationship) {
 		switch($relationship) {
 			case self::FOLLOWER:
 				$this->connectFollower($person1, $person2);
