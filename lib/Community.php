@@ -52,13 +52,24 @@ class Community {
 	public function addConnections($connections) {
 		if (is_array($connections)) {
 			foreach($connections as $connection) {
-				$this->addRelationship(
+				$this->addConnection(
 					$connection->getPersonId(),
-					$connection->getFollowingId(),
-					self::FOLLOWING
+					$connection->getFollowingId()
 				);
 			}
 		}
+	}
+	
+	public function addConnection($fromId, $toId) {
+		if ($this->isPerson($fromId) && $this->isPerson($toId)) { 
+			$this->addRelationship($fromId, $toId, self::FOLLOWING);
+			return true;
+		}
+		return false;
+	}
+	
+	public function isPerson($personId) {
+		return !empty($this->people[$personId]);
 	}
 
 	public function isFollowing($person1, $person2) {

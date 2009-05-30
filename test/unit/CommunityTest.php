@@ -31,7 +31,33 @@ $people = createPeople(5);
 $community->addPeople($people);
 $t->is(count($community->people), 5, 'addPeople() updates people attribute correctly');
 
+$t->ok($community->isPerson(1), 'isPerson() returns true when person id exists');
+$t->ok(!$community->isPerson(99), 'isPerson() returns false when person id doesn\'t exist');
 
+$ret = $community->addConnection(999, 998);
+$t->ok(!$ret, 'addConnection() rejects links between non-existent people');
+
+$ret = $community->addConnection(1, 998);
+$t->ok(!$ret, 'addConnection() rejects links when one person doesn\'t exist');
+
+$ret = $community->addConnection(1, 2);
+$t->ok($ret, 'addConnection() sets connection when both people exist');
+
+$t->ok($community->isFollowing(2,1), 'isFollowing() returns true when a person is following another');
+$t->ok(!$community->isFollowing(1,2), 'isFollowing() returns false when a person isn\'t following another');
+
+$t->ok($community->isFollowedBy(1,2), 'isFollowedBy() returns true when a person is followed by another');
+$t->ok(!$community->isFollowedBy(2,1), 'isFollowedBy() returns false when a person isn\'t followed by another');
+
+$t->ok(!$community->areFriends(2,1), 'areFriends() returns false when two people aren\'t following each other');
+
+$ret = $community->addConnection(3, 4);
+$ret = $community->addConnection(4, 3);
+$t->ok($community->isFollowing(3,4), 'isFollowing() returns true when a person is following another');
+$t->ok($community->isFollowing(4,3), 'isFollowing() returns true when a person is following another');
+$t->ok($community->isFollowedBy(3,4), 'isFollowedBy() returns true when a person is followed by another');
+$t->ok($community->isFollowedBy(4,3), 'isFollowedBy() returns true when a person is followed by another');
+$t->ok($community->areFriends(3,4), 'areFriends() returns true when two people are following each other');
 
 
 function createTopic($id, $slug) {
