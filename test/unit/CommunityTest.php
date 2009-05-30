@@ -51,6 +51,14 @@ $t->ok(!$community->isFollowedBy(2,1), 'isFollowedBy() returns false when a pers
 
 $t->ok(!$community->areFriends(2,1), 'areFriends() returns false when two people aren\'t following each other');
 
+$t->diag('Testing adding mutual connections');
+$t->ok(!$community->isFollowing(3,4), 'isFollowing() returns false when no connections exist between two people');
+$t->ok(!$community->isFollowing(4,3), 'isFollowing() returns false when no connections exist between two people');
+$t->ok(!$community->isFollowedBy(3,4), 'isFollowedBy() returns false when no connections exist between two people');
+$t->ok(!$community->isFollowedBy(4,3), 'isFollowedBy() returns false when no connections exist between two people');
+$t->ok(!$community->areFriends(3,4), 'areFriends() returns false when no connections exist between two people');
+
+$t->diag('Adding in the mutual connection, one connection at a time');
 $ret = $community->addConnection(3, 4);
 $ret = $community->addConnection(4, 3);
 $t->ok($community->isFollowing(3,4), 'isFollowing() returns true when a person is following another');
@@ -58,6 +66,7 @@ $t->ok($community->isFollowing(4,3), 'isFollowing() returns true when a person i
 $t->ok($community->isFollowedBy(3,4), 'isFollowedBy() returns true when a person is followed by another');
 $t->ok($community->isFollowedBy(4,3), 'isFollowedBy() returns true when a person is followed by another');
 $t->ok($community->areFriends(3,4), 'areFriends() returns true when two people are following each other');
+
 
 
 function createTopic($id, $slug) {
