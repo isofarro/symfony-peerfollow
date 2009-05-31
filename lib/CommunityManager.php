@@ -79,7 +79,7 @@ class CommunityManager {
 				//       2.) deals with nodes with no outbound connections
 				$damp = round($node->accum * $gravity / 100);
 				$node->rank += $damp; // TODO: delay until rank has been passed
-				$totalOut = count($node->edges);
+				$totalOut = count($node->outbound);
 				//echo "[$totalOut]";
 
 				if ($totalOut>0) {
@@ -92,7 +92,7 @@ class CommunityManager {
 							$maxBonus = $bonus;
 						}
 						reset($network);
-						foreach($node->edges as $outNodeId) {
+						foreach($node->outbound as $outNodeId) {
 							$network[$outNodeId]->accum += $bonus;
 						}
 						echo '+'; //, $bonus;

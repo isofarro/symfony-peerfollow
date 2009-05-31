@@ -8,8 +8,7 @@ class Community {
 	var $topic;
 	var $people      = array();
 	var $peopleKeys  = array();
-	var $connections = array();
-
+	
 	// For network set calculations
 	var $network = array();
 	
@@ -44,7 +43,7 @@ class Community {
 		return $this->peopleKeys;
 	}
 
-	public function getPerson($key) {
+ 	public function getPerson($key) {
 		return $this->people[$key];
 	}
 
@@ -72,18 +71,15 @@ class Community {
 	}
 
 	public function isFollowing($person1, $person2) {
-		return (!empty($this->connections[$person1][$person2]));
+		return in_array($person1, $this->network[$person2]->inbound);
 	}
 	
 	public function isFollowedBy($person1, $person2) {
-		return (!empty($this->connections[$person2][$person1]));
+		return in_array($person1, $this->network[$person2]->outbound);
 	}
 	
 	public function areFriends($person1, $person2) {
-		return (
-			!empty($this->connections[$person1][$person2]) &&
-			!empty($this->connections[$person2][$person1])
-		);
+		return in_array($person1, $this->network[$person2]->twoway);
 	}
 
 
@@ -105,15 +101,17 @@ class Community {
 	}
 	
 	protected function connectFollower($person1, $person2) {
-		if (empty($this->connections[$person1])) {
-			$this->connections[$person1] = array();
-		}
-		$this->connections[$person1][$person2] = 1;
-		
 		if (!empty($this->network[$person1])) {
-			$this->network[$person1]->edges[] = $person2;
+			$this->network[$person1]->outbound[] = $person2;
+			$this->network[$person2]->inbound[]  = $person1;
 		} else {
 			echo "WARN: No network node for {$person1}\n";
+		}
+		
+		// Check if there is now a two way connection
+		if (in_array($person1, $this->network[$person2]->outbound)) {
+			$this->network[$person1]->twoway[] = $person2;
+			$this->network[$person2]->twoway[] = $person1;
 		}
  	}
 	
@@ -134,7 +132,13 @@ class Node {
 	var $rank   = 0;
 	var $accum  = 0;
 
-	var $edges  = array();
+	// TODO: refactor by replacing with outbound
+	//var $edges  = array();
+
+	// Keeping richer descriptions of edges
+	var $outbound = array();
+	var $inbound  = array();
+	var $twoway   = array();
 }
 
 ?>

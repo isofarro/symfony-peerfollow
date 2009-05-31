@@ -29,6 +29,7 @@ $t->ok(!$ret, 'setTopic() doesn\'t accept a plain data object');
 $people = createPeople(5);
 
 $community->addPeople($people);
+
 $t->is(count($community->people), 5, 'addPeople() updates people attribute correctly');
 
 $t->ok($community->isPerson(1), 'isPerson() returns true when person id exists');
@@ -45,6 +46,7 @@ $t->ok($ret, 'addConnection() sets connection when both people exist');
 
 $t->ok($community->isFollowing(2,1), 'isFollowing() returns true when a person is following another');
 $t->ok(!$community->isFollowing(1,2), 'isFollowing() returns false when a person isn\'t following another');
+
 
 $t->ok($community->isFollowedBy(1,2), 'isFollowedBy() returns true when a person is followed by another');
 $t->ok(!$community->isFollowedBy(2,1), 'isFollowedBy() returns false when a person isn\'t followed by another');
@@ -77,7 +79,6 @@ $t->ok($community->isFollowedBy(2,5), 'isFollowedBy() returns true when a person
 $t->ok($community->isFollowedBy(5,2), 'isFollowedBy() returns true when a person is followed by another');
 $t->ok($community->areFriends(2,5), 'areFriends() returns true when two people are following each other');
 $t->ok($community->areFriends(5,2), 'areFriends() returns true when two people are following each other');
-
 
 
 
