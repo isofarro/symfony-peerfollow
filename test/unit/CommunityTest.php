@@ -94,10 +94,10 @@ function createPeople($number=1) {
 	
 	for($i=0; $i < $number; $i++) {
 		$person = new Person();
-		$person->id = $i;
+		$person->id = $i+1;
 		$person->username = "user{$i}";
 	
-		$people[] = $person;
+		$people[$person->id] = $person;
 	}	
 	
 	return $people;

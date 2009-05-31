@@ -33,7 +33,6 @@ class Community {
 	}
 
 	public function addPeople($people) {
-		//$this->people = array_merge($this->people, $people);
 		foreach($people as $person) {
 			$this->people[$person->getId()] = $person;
 			$this->peopleKeys[] = $person->getId();
