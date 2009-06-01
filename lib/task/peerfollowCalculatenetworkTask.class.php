@@ -78,8 +78,20 @@ EOF;
 			foreach($list as $citizenId) {
 				$people[] = $network[$citizenId]->name;
 			}
-	
+			
+			/**
+				150 - the rank every node receives for free
+				 93 - the number of nodes in the network			
+			**/
+			//$log = round(log($key, 2), 2); // - 4;
+			//$log = round(max(0, round(log($key - 150, 93) - 1, 2)) * 10);
+			//$log = round(max(0, (log($key - 150, 93) - 1) * 10) );
+			$log = (log($key - 150, 93) - 1) * 10;
+			$log = max( 0, $log);
+			$log = min(10, $log);
+			$log = round($log);
 			echo str_pad($key, 5, ' ', STR_PAD_LEFT), ' ',
+				'(', str_pad($log, 2, ' ', STR_PAD_LEFT), ') ',
 				implode(', ', $people), "\n";
 		}
 	
