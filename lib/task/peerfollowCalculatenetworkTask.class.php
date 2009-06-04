@@ -75,10 +75,6 @@ EOF;
 		krsort($ranked, SORT_NUMERIC);
 		echo "\n";
 		foreach ($ranked as $key=>$list) {
-			$people = array();
-			foreach($list as $citizenId) {
-				$people[] = $network[$citizenId]->name;
-			}
 			
 			/**
 				150 - the rank every node receives for free
@@ -109,10 +105,19 @@ EOF;
 				2.1
 				1.05
 			****/
+
+			foreach($list as $citizenId) {
+				$node = $network[$citizenId];
+
+				echo str_pad($key, 5, ' ', STR_PAD_LEFT), ' ',
+					'(', str_pad($log, 2, ' ', STR_PAD_LEFT), ') ',
+					str_pad($node->name, 16), ' ',
+					'[', str_pad(count($node->inbound), 3, ' ', STR_PAD_LEFT), ']',
+					'[', str_pad(count($node->twoway),  3, ' ', STR_PAD_LEFT), ']', 
+					"\n";
+			}
+
 			
-			echo str_pad($key, 5, ' ', STR_PAD_LEFT), ' ',
-				'(', str_pad($log, 2, ' ', STR_PAD_LEFT), ') ',
-				implode(', ', $people), "\n";
 		}
 	
 	}
