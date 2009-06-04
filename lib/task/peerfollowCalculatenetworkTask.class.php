@@ -50,9 +50,13 @@ EOF;
 		$manager = new CommunityManager();
 		$manager->calculateNetworkRank($community->network);
 
-		$this->displayResults($community->network);
+		$karma = $community->getCommunityKarma();
+		echo "Total Karma: {$karma}\n";
+		
+		//$this->displayResults($community->network);
 
 		// Save the results
+
 	}
 
 

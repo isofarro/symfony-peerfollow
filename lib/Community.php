@@ -12,6 +12,9 @@ class Community {
 	// For network set calculations
 	var $network = array();
 	
+	// cached calculation of karma
+	var $karma = 0;
+	
 
 	public function __construct($topic=false) {
 		if ($topic) {
@@ -46,6 +49,18 @@ class Community {
  	public function getPerson($key) {
 		return $this->people[$key];
 	}
+
+	public function getCommunityKarma() {
+		if ($this->karma==0) {
+			$total = 0;
+			foreach($this->network as $node) {
+				$total += $node->rank;
+			}
+			$this->karma = $total;
+		}
+		return $this->karma;
+	}
+
 
 	public function addConnections($connections) {
 		if (is_array($connections)) {
@@ -98,6 +113,7 @@ class Community {
 			default:
 				break;
 		}
+
 	}
 	
 	protected function connectFollower($person1, $person2) {
