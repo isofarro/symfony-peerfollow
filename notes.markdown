@@ -2,8 +2,8 @@ Notes and ideas
 ===============
 
 
-todo:
------
+Issues:
+-------
 
 * Subsystem to track updates to followers lists. Weighed by peerrank.
 * What to do with connections outside community?
@@ -12,10 +12,12 @@ todo:
 Weighting trust
 ---------------
 
+A simple way of preferring two-way/mutual links over one way followers.
+
 * `x` - number of followers
 * `y` - number of friends
 * `z` - total value passed
-* 'x + 1.5y' - number of virtual followers
+* `x + 1.5y` - number of virtual followers
 * `z / (x + 1.5y)` - bonus per x
 * `1.5x` - bonus per y 
 

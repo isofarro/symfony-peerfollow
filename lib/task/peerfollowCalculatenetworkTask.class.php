@@ -52,6 +52,7 @@ EOF;
 
 		$this->displayResults($community->network);
 
+		// Save the results
 	}
 
 
@@ -81,15 +82,34 @@ EOF;
 			
 			/**
 				150 - the rank every node receives for free
-				 93 - the number of nodes in the network			
+				 93 - the number of nodes in the network
+				 
+				 TODO: Break the range into 11 segments where
+				 150  is section 0
+				 1000 is section 5
+				 
+				 score = 2^(rank-offset)
 			**/
-			//$log = round(log($key, 2), 2); // - 4;
-			//$log = round(max(0, round(log($key - 150, 93) - 1, 2)) * 10);
-			//$log = round(max(0, (log($key - 150, 93) - 1) * 10) );
+/****
 			$log = (log($key - 150, 93) - 1) * 10;
 			$log = max( 0, $log);
 			$log = min(10, $log);
 			$log = round($log);
+****/
+			// Try base 2 logs
+			//$log = round(log($key, 2), 2) - 7;
+			$percent = ( ($key-150) * 100 / 92462 ); // attention score
+			$log     = floor(log($percent, 2) + 5);
+			$log     = min( 10, max( 0, $log) );
+
+			/****
+				0.85 - 1 ==> 5
+				8.4      ==> 9 or 10
+				4.2
+				2.1
+				1.05
+			****/
+			
 			echo str_pad($key, 5, ' ', STR_PAD_LEFT), ' ',
 				'(', str_pad($log, 2, ' ', STR_PAD_LEFT), ') ',
 				implode(', ', $people), "\n";
