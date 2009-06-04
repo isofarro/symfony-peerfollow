@@ -56,7 +56,36 @@ EOF;
 		//$this->displayResults($community->network);
 
 		// Save the results
+		$topic = $community->getTopic();
+		$topicId = $topic->getId();
+		
+		foreach($community->network as $node) {
+			$person = $community->getPerson($node->nodeId);
+			$personId = $person->getId();
+			
+			$topicPerson = TopicpersonPeer::getTopicPerson($topicId, $personId);
+			
+			if (empty($topicPerson)) {
+				$topicPerson = new Topicperson();
+				$topicPerson->setTopicId($topicId);
+				$topicPerson->setPersonId($personId);
+			}
 
+			$rank = $this->getRank($node->rank, $karma, 150);			
+			$topicPerson->setRank($rank);
+			$topicPerson->setFollowers( count($node->inbound) );
+			$topicPerson->setFollowing( count($node->outbound) );
+			$topicPerson->setFriends( count($node->twoway) );
+			
+			$topicPerson->save();
+		}
+	}
+	
+	protected function getRank($karma, $maxKarma, $minKarma) {
+		$percent = ( ($karma - $minKarma) * 100 / $maxKarma ); // attention score
+		$log     = floor(log($percent, 2) + 5);
+		$log     = min( 10, max( 0, $log) );
+		return $log;
 	}
 
 
