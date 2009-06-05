@@ -50,8 +50,8 @@ EOF;
 		$manager = new CommunityManager();
 		$manager->calculateNetworkRank($community->network);
 
-		$karma = $community->getCommunityKarma();
-		echo "Total Karma: {$karma}\n";
+		$karmaTotal = $community->getCommunityKarma();
+		echo "Total Karma: {$karmaTotal}\n";
 		
 		//$this->displayResults($community->network);
 
@@ -71,8 +71,9 @@ EOF;
 				$topicPerson->setPersonId($personId);
 			}
 
-			$rank = $this->getRank($node->rank, $karma, 150);			
-			$topicPerson->setRank($rank);
+			$peerrank = $this->getRank($node->rank, $karmaTotal, 150);			
+			$topicPerson->setKarma($node->rank);
+			$topicPerson->setRank($peerrank);
 			$topicPerson->setFollowers( count($node->inbound) );
 			$topicPerson->setFollowing( count($node->outbound) );
 			$topicPerson->setFriends( count($node->twoway) );

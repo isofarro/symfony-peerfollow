@@ -112,6 +112,7 @@ CREATE TABLE `topicPerson`
 (
 	`person_id` INTEGER  NOT NULL,
 	`topic_id` INTEGER  NOT NULL,
+	`karma` INTEGER default 0,
 	`rank` INTEGER default 0,
 	`followers` INTEGER default 0,
 	`following` INTEGER default 0,

@@ -17,6 +17,7 @@ class BaseTopicpersonFormFilter extends BaseFormFilterPropel
     $this->setWidgets(array(
       'person_id'  => new sfWidgetFormPropelChoice(array('model' => 'Person', 'add_empty' => true)),
       'topic_id'   => new sfWidgetFormPropelChoice(array('model' => 'Topic', 'add_empty' => true)),
+      'karma'      => new sfWidgetFormFilterInput(),
       'rank'       => new sfWidgetFormFilterInput(),
       'followers'  => new sfWidgetFormFilterInput(),
       'following'  => new sfWidgetFormFilterInput(),
@@ -27,6 +28,7 @@ class BaseTopicpersonFormFilter extends BaseFormFilterPropel
     $this->setValidators(array(
       'person_id'  => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Person', 'column' => 'id')),
       'topic_id'   => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Topic', 'column' => 'id')),
+      'karma'      => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'rank'       => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'followers'  => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'following'  => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
@@ -51,6 +53,7 @@ class BaseTopicpersonFormFilter extends BaseFormFilterPropel
     return array(
       'person_id'  => 'ForeignKey',
       'topic_id'   => 'ForeignKey',
+      'karma'      => 'Number',
       'rank'       => 'Number',
       'followers'  => 'Number',
       'following'  => 'Number',

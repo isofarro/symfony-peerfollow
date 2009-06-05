@@ -15,6 +15,7 @@ class BaseTopicpersonForm extends BaseFormPropel
     $this->setWidgets(array(
       'person_id'  => new sfWidgetFormPropelChoice(array('model' => 'Person', 'add_empty' => false)),
       'topic_id'   => new sfWidgetFormPropelChoice(array('model' => 'Topic', 'add_empty' => false)),
+      'karma'      => new sfWidgetFormInput(),
       'rank'       => new sfWidgetFormInput(),
       'followers'  => new sfWidgetFormInput(),
       'following'  => new sfWidgetFormInput(),
@@ -26,6 +27,7 @@ class BaseTopicpersonForm extends BaseFormPropel
     $this->setValidators(array(
       'person_id'  => new sfValidatorPropelChoice(array('model' => 'Person', 'column' => 'id')),
       'topic_id'   => new sfValidatorPropelChoice(array('model' => 'Topic', 'column' => 'id')),
+      'karma'      => new sfValidatorInteger(array('required' => false)),
       'rank'       => new sfValidatorInteger(array('required' => false)),
       'followers'  => new sfValidatorInteger(array('required' => false)),
       'following'  => new sfValidatorInteger(array('required' => false)),
