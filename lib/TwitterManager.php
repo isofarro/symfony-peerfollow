@@ -8,14 +8,17 @@ require_once dirname(__file__) . '/php5-http-utils/HttpResponse.php';
 require_once dirname(__file__) . '/php5-http-utils/HttpClient.php';
 
 class TwitterManager {
+	var $api;
+
+	public function __construct() {
+		$this->api = new TwitterApi();
+	}
 
 	public function getFollowing($username) {
 		echo "Getting people {$username} is following\n";
 		
-		$api = new TwitterApi();
-
 		// TODO: Correct Twitter API method name: getFollowing($username);
-		$following	= $api->getFriends($username);
+		$following	= $this->api->getFriends($username);
 		
 		return $following;
 	}
