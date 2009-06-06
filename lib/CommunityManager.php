@@ -1,5 +1,11 @@
 <?php
 
+require_once dirname(__file__) . '/php5-http-utils/HttpUtils.php';
+require_once dirname(__file__) . '/php5-http-utils/HttpCache.php';
+require_once dirname(__file__) . '/php5-http-utils/HttpRequest.php';
+require_once dirname(__file__) . '/php5-http-utils/HttpResponse.php';
+require_once dirname(__file__) . '/php5-http-utils/HttpClient.php';
+
 class CommunityManager {
 
 	/**

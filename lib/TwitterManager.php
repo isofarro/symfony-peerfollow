@@ -19,7 +19,8 @@ class TwitterManager {
 		
 		// TODO: Correct Twitter API method name: getFollowing($username);
 		$following	= $this->api->getFriends($username);
-		
+		echo "\n";
+				
 		return $following;
 	}
 

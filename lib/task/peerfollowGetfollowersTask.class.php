@@ -39,21 +39,26 @@ EOF;
     
 	$twitter = new TwitterManager();
     
-	$limit = 5;
+	$limit = -1;
     
 	foreach($people as $person) {
 		//echo " * ", $person->getUsername(), ': ', $person->getFullname(), "\n";
 		$following = $twitter->getFollowing($person->getUsername());
+
+		if (is_null($following)) {
+			echo "INFO: Reached our Twitter request ratelimit.\n";
+			break;
+		} 
+
 		$total = $this->_processFollowing($person->getId(), $following);
 		
-		echo "\n* ", $person->getUsername(), ": added {$total} new relationships\n";
+		echo "* ", $person->getUsername(), ": added {$total} new relationships\n";
 		$person->setStatus('A');
 		$person->save();
 
 		$limit--;
-		
-    	
 		if ($limit==0) { break; }
+
     }
   }
   
