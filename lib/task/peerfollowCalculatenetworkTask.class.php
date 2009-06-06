@@ -53,7 +53,7 @@ EOF;
 		$karmaTotal = $community->getCommunityKarma();
 		echo "Total Karma: {$karmaTotal}\n";
 		
-		//$this->displayResults($community->network);
+		$this->displayResults($community->network);
 
 		// Save the results
 		$topic = $community->getTopic();
