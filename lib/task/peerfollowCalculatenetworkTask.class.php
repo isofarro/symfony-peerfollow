@@ -146,8 +146,9 @@ EOF;
 				echo str_pad($key, 5, ' ', STR_PAD_LEFT), ' ',
 					'(', str_pad($log, 2, ' ', STR_PAD_LEFT), ') ',
 					str_pad($node->name, 16), ' ',
-					'[', str_pad(count($node->inbound), 3, ' ', STR_PAD_LEFT), ']',
-					'[', str_pad(count($node->twoway),  3, ' ', STR_PAD_LEFT), ']', 
+					'[<', str_pad(count($node->inbound), 3, ' ', STR_PAD_LEFT), ']',
+					'[>', str_pad(count($node->outbound), 3, ' ', STR_PAD_LEFT), ']',
+					'[=', str_pad(count($node->twoway),  3, ' ', STR_PAD_LEFT), ']', 
 					"\n";
 			}
 
