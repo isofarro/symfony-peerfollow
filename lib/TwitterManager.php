@@ -25,10 +25,14 @@ class TwitterManager {
 	}
 
 	public function addSearchResults($topic, $results) {
+		// TODO: formatSearchResults should be in TwitterApi
 		$tweets = $this->formatSearchResults($results);
-		//print_r($tweets);
+		print_r($tweets);
 		//print_r($tweets[0]);
 
+		// Look for tweets from peerranked people
+		// Look for "RT @user" or "via @user"
+		// Check if tweet has been retweeted
 	}
 
 
