@@ -13,6 +13,10 @@ $page = getPage('search.json');
 
 $twitter->addSearchResults('accessibility', $page->results);
 
+//$results = $twitter->search('accessibility OR a11y');
+//print_r($results);
+
+
 /**
 // Dealing with the left overs
 $page->results = 'Array of results';

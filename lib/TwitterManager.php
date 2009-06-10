@@ -33,15 +33,16 @@ class TwitterManager {
 		search() gets search results for a searchTerm
 		Returns an array of tweets
 	**/
-	public function seach($query, $page=false) {
+	public function search($query, $page=false) {
 		$results = $this->api->search($query, $page);
+		return $results;
 	}
 	
 	public function addSearchResults($topic, $results) {
 		// TODO: formatSearchResults should be in TwitterApi
 		$tweets = $this->formatSearchResults($results);
 		//print_r($tweets);
-		print_r($tweets[0]);
+		//print_r($tweets[0]);
 
 		$keywords = array( 'accessibility', 'a11y' );
 
@@ -57,7 +58,7 @@ class TwitterManager {
 			$peer = true; // $this->community->isMember($tweet->id);
 
 			$prefix = '';
-			if ($this->isRetweet($tweet)) {
+			if (false && $this->isRetweet($tweet)) {
 				//echo " * Retweet\n";
 				$prefix .= 'R';
 				//break;
@@ -65,18 +66,25 @@ class TwitterManager {
 			
 			if ($this->isLink($tweet)) {
 				$prefix .= 'L';
-				//$links = $this->getLinks($tweet);
-				//$this->trackLinks($links);
+				//echo "{$prefix}[{$tweet->user}] {$tweet->text}\n";
+				$links = $this->getLinks($tweet);
+				$this->trackLinks($links);
 			}
 
-			if ($this->isKeywordTweet($tweet, $keywords)) {
+			if (false && $this->isKeywordTweet($tweet, $keywords)) {
 				$prefix .= 'K';
 			}
 
-			echo "{$prefix}[{$tweet->user}] {$tweet->text}\n";
+			//echo "{$prefix}[{$tweet->user}] {$tweet->text}\n";
 		}
 		
-		echo "\n";
+		//echo "\n";
+		
+		// Dump linkmap
+		foreach($this->linkMap as $link=>$occur) {
+			echo "({$occur}) $link\n";
+		}		
+		
 	}
 	
 	protected function isRetweet($tweet) {
@@ -103,13 +111,35 @@ class TwitterManager {
 	
 	protected function getLinks($tweet) {
 		$links = array();
-		if (preg_match('/\b(http:\/\/[^ ]+)/i', $tweet->text, $matches)) {
-			// Which one gives me how many matches found?
-			return array( $matches[1] );
+
+		// TODO: Test this with multiple links
+		$numMatches = preg_match_all(
+			'/\b(http:\/\/[^ ]+)/i', 
+			$tweet->text, 
+			$matches
+		);		
+		
+		if ($numMatches) {
+			foreach($matches as $singleMatch) {
+				$links[] = $singleMatch[0];
+			}
 		}
 		return $links;
-	}	
+	}
 	
+	protected function trackLinks($links) {
+		foreach($links as $link) {
+			$this->trackLink($link);
+		}
+	}
+
+	protected function trackLink($link) {
+		if (empty($this->linkMap[$link])) {
+			$this->linkMap[$link] = 1;
+		} else {
+			$this->linkMap[$link]++;
+		}
+	}
 	
 	public function formatSearchResults($results) {
 		$tweets = array();
