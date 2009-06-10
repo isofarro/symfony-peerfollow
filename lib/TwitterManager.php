@@ -9,6 +9,11 @@ require_once dirname(__file__) . '/php5-http-utils/HttpClient.php';
 
 class TwitterManager {
 	var $api;
+	var $community; // For measuring peers
+
+	// Search map data structures
+	var $linkMap     = array(); // Lookup of unshortened links
+	var $redirectMap = array(); // Lookup for link-shorteners
 
 	public function __construct() {
 		$this->api = new TwitterApi();
@@ -23,19 +28,89 @@ class TwitterManager {
 				
 		return $following;
 	}
-
+	
+	/**
+		search() gets search results for a searchTerm
+		Returns an array of tweets
+	**/
+	public function seach($query, $page=false) {
+		$results = $this->api->search($query, $page);
+	}
+	
 	public function addSearchResults($topic, $results) {
 		// TODO: formatSearchResults should be in TwitterApi
 		$tweets = $this->formatSearchResults($results);
-		print_r($tweets);
-		//print_r($tweets[0]);
+		//print_r($tweets);
+		print_r($tweets[0]);
 
+		$keywords = array( 'accessibility', 'a11y' );
+
+		// Where is the community data coming from?
+		//		* getCommunity($topic)?
+		//		* Community members + topicPerson data.
+		//			Still a Community object, just without the network data
 		// Look for tweets from peerranked people
 		// Look for "RT @user" or "via @user"
 		// Check if tweet has been retweeted
+		foreach($tweets as $tweet) {
+			
+			$peer = true; // $this->community->isMember($tweet->id);
+
+			$prefix = '';
+			if ($this->isRetweet($tweet)) {
+				//echo " * Retweet\n";
+				$prefix .= 'R';
+				//break;
+			}
+			
+			if ($this->isLink($tweet)) {
+				$prefix .= 'L';
+				//$links = $this->getLinks($tweet);
+				//$this->trackLinks($links);
+			}
+
+			if ($this->isKeywordTweet($tweet, $keywords)) {
+				$prefix .= 'K';
+			}
+
+			echo "{$prefix}[{$tweet->user}] {$tweet->text}\n";
+		}
+		
+		echo "\n";
+	}
+	
+	protected function isRetweet($tweet) {
+		if (preg_match('/\b(RT|via) \@\b/i', $tweet->text)) {
+			return true;
+		}
+		return false;
 	}
 
+	protected function isLink($tweet) {
+		if (preg_match('/\bhttp:\/\//i', $tweet->text)) {
+			return true;
+		}
+		return false;
+	}
 
+	protected function isKeywordTweet($tweet, $keywords) {
+		$reg = implode('|', $keywords);
+		if (preg_match("/#({$reg})\b/i", $tweet->text)) {
+			return true;
+		}
+		return false;
+	}
+	
+	protected function getLinks($tweet) {
+		$links = array();
+		if (preg_match('/\b(http:\/\/[^ ]+)/i', $tweet->text, $matches)) {
+			// Which one gives me how many matches found?
+			return array( $matches[1] );
+		}
+		return $links;
+	}	
+	
+	
 	public function formatSearchResults($results) {
 		$tweets = array();
 		foreach($results as $result) {
@@ -65,6 +140,34 @@ class TwitterManager {
 
 		return $tweet;
 	}
+}
+
+class CanonicalLink {
+	var $lookup = array();
+	
+	public function getCanonicalLink($link) {
+		if (!empty($this->lookup[$link])) {
+			return $this->lookup[$link];
+		}
+		
+		$canonical = $this->followLink($link);
+		if ($link != $canonical) {
+			$this->lookup[$link] = $canonical;
+		}
+		return $canonical;
+	}
+	
+	/**
+		Gets the link and figures out whether it's a shortened link
+		or a canonical link
+		
+		* Deal with 301 and 302 redirects
+		* Deal with Diggbar/StumbleUpon iframes
+	**/
+	public function followLink($link) {
+		return $link;
+	}
+
 }
 
 ?>

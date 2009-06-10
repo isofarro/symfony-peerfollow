@@ -49,6 +49,10 @@ class Community {
  	public function getPerson($key) {
 		return $this->people[$key];
 	}
+	
+	public function isMember($id) {
+		return array_key_exists($id, $this->people);
+	}
 
 	public function getCommunityKarma() {
 		if ($this->karma==0) {
