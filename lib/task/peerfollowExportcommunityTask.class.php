@@ -17,7 +17,7 @@ class peerfollowExportcommunityTask extends sfBaseTask
 
 		$this->namespace        = 'peerfollow';
 		$this->name             = 'export-community';
-		$this->briefDescription = 'Exports a community to JSON';
+		$this->briefDescription = 'Exports a community to a serialised object';
 		$this->detailedDescription = <<<EOF
 The [peerfollow:export-community|INFO] exports the network data
 for the specified community.
@@ -37,12 +37,13 @@ EOF;
 
 		// Get the topic id - this will save complicated joins in other queries
 		$topicName   = $arguments['topic'];
-		//$community = $this->getCommunity($topicName);
 		$community = TopicPeer::getCommunity($topicName);
 
 		$export = (object) NULL;
 		$export->topic = $topicName;
 		$export->members = array();
+		
+		$lookup = array();
 		
 		foreach($community->people as $person) {
 			//echo $person->getUsername(), "\n";
@@ -67,11 +68,15 @@ EOF;
 			$member->noFollowers = $person->getNoFollowers();
 			//$member->noFriends   = $person->getNoFriends();
 
-			$export->members[] = $member;
+			$export->members[$member->username] = $member;
+			$lookup[$person->getId()] = $member->username;
 		}
+		
+		// Tackle the connections
 
 		//print_r($community->people[5]);
-		print_r($export->members[6]);
+		print_r($export->members['laura_carlson']);
+		//print_r($lookup);
 	}
 
 }
