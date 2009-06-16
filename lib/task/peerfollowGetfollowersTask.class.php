@@ -18,7 +18,7 @@ class peerfollowGetfollowersTask extends sfBaseTask
 
     $this->namespace        = 'peerfollow';
     $this->name             = 'get-followers';
-    $this->briefDescription = '';
+    $this->briefDescription = 'Gets/updates the followers of a member';
     $this->detailedDescription = <<<EOF
 The [peerfollow:get-followers|INFO] task does things.
 Call it with:

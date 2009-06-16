@@ -17,7 +17,7 @@ class peerfollowCalculatenetworkTask extends sfBaseTask
 
 		$this->namespace        = 'peerfollow';
 		$this->name             = 'calculate-network';
-		$this->briefDescription = '';
+		$this->briefDescription = 'Calculates the community rank of members';
 		$this->detailedDescription = <<<EOF
 The [peerfollow:calculate-network|INFO] calculates the peer rank for all 
 people in the selected network, or community.
