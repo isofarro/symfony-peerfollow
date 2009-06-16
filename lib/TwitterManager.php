@@ -47,7 +47,7 @@ class TwitterManager {
 		$keywords = array( 'accessibility', 'a11y' );
 
 		// Where is the community data coming from?
-		//		* getCommunity($topic)?
+		//		* getCommunity($topic)? -- optional for weighing tweets
 		//		* Community members + topicPerson data.
 		//			Still a Community object, just without the network data
 		// Look for tweets from peerranked people
@@ -82,7 +82,9 @@ class TwitterManager {
 		
 		// Dump linkmap
 		foreach($this->linkMap as $link=>$occur) {
-			echo "({$occur}) $link\n";
+			if ($occur>2) {
+				echo "({$occur}) $link\n";
+			}
 		}		
 		
 	}
