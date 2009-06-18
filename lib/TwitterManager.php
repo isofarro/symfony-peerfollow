@@ -87,6 +87,23 @@ class TwitterManager {
 		}
 		
 		//echo "\n";
+/**
+	Aggregate rules:
+	* min karma + #tag -- Publish
+	* min karma + link -- Publish
+	* min karmaRT -- Publish original + recommend
+	* unknown + #tag -- recommend by others
+	* unknown + link -- recommended by others
+
+	* min karma value?
+	  * sum -- can be games
+	  * average -- can be negatively gamed
+	  * weighted average.
+	  * min karma weight + less karma weight
+	  * prefer connectors
+
+**/
+
 
 /****		
 		// Dump linkmap
