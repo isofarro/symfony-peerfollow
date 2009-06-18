@@ -1,6 +1,7 @@
 <?php
 
 require_once dirname(__file__) . '/php5-http-utils/TwitterApi.php';
+require_once dirname(__file__) . '/php5-http-utils/CanonicalLink.php';
 require_once dirname(__file__) . '/php5-http-utils/HttpUtils.php';
 require_once dirname(__file__) . '/php5-http-utils/HttpCache.php';
 require_once dirname(__file__) . '/php5-http-utils/HttpRequest.php';
@@ -12,11 +13,13 @@ class TwitterManager {
 	var $community; // For measuring peers
 
 	// Search map data structures
+	var $canonLink;
 	var $linkMap     = array(); // Lookup of unshortened links
 	var $redirectMap = array(); // Lookup for link-shorteners
 
 	public function __construct() {
-		$this->api = new TwitterApi();
+		$this->api       = new TwitterApi();
+		$this->canonLink = new CanonicalLink();
 	}
 
 	public function getFollowing($username) {
@@ -71,22 +74,28 @@ class TwitterManager {
 				$this->trackLinks($links);
 			}
 
-			if (false && $this->isKeywordTweet($tweet, $keywords)) {
+			if ($this->isKeywordTweet($tweet, $keywords)) {
 				$prefix .= 'K';
 			}
 
 			//echo "{$prefix}[{$tweet->user}] {$tweet->text}\n";
+
+			if (strpos($prefix, 'L') !== false) {
+				echo "{$prefix}[{$tweet->user}] {$tweet->text}\n";
+			}
+
 		}
 		
 		//echo "\n";
-		
+
+/****		
 		// Dump linkmap
 		foreach($this->linkMap as $link=>$occur) {
-			if ($occur>2) {
+			if ($occur>0) {
 				echo "({$occur}) $link\n";
 			}
 		}		
-		
+****/		
 	}
 	
 	protected function isRetweet($tweet) {
@@ -136,6 +145,9 @@ class TwitterManager {
 	}
 
 	protected function trackLink($link) {
+		// Get canonical links
+		//$link = $this->canonLink->getCanonicalLink($link);
+
 		if (empty($this->linkMap[$link])) {
 			$this->linkMap[$link] = 1;
 		} else {
@@ -174,7 +186,7 @@ class TwitterManager {
 	}
 }
 
-class CanonicalLink {
+class OLDCanonicalLink {
 	var $lookup = array();
 	
 	public function getCanonicalLink($link) {
