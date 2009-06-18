@@ -163,7 +163,7 @@ class TwitterManager {
 
 	protected function trackLink($link) {
 		// Get canonical links
-		//$link = $this->canonLink->getCanonicalLink($link);
+		$link = $this->canonLink->getCanonicalLink($link);
 
 		if (empty($this->linkMap[$link])) {
 			$this->linkMap[$link] = 1;
