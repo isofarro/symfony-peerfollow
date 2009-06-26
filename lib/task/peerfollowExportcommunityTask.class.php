@@ -38,6 +38,8 @@ EOF;
 		// Get the topic id - this will save complicated joins in other queries
 		$topicName   = $arguments['topic'];
 		$community = TopicPeer::getCommunity($topicName);
+		
+		//print_r($community);
 
 		$export = (object) NULL;
 		$export->topic = $topicName;
@@ -68,6 +70,19 @@ EOF;
 			$member->noFollowers = $person->getNoFollowers();
 			//$member->noFriends   = $person->getNoFriends();
 
+			// Create connections
+			$member->inbound  = array();
+			$member->outbound = array();
+			
+			$node = $community->network[$person->getId()];
+			foreach($node->inbound as $nodeId) {
+				$member->inbound[] = $community->network[$nodeId]->name;
+			}
+
+			foreach($node->outbound as $nodeId) {
+				$member->outbound[] = $community->network[$nodeId]->name;
+			}
+
 			$export->members[$member->username] = $member;
 			$lookup[$person->getId()] = $member->username;
 		}
@@ -75,8 +90,13 @@ EOF;
 		// Tackle the connections
 
 		//print_r($community->people[5]);
-		print_r($export->members['laura_carlson']);
+		//print_r($export->members['laura_carlson']);
 		//print_r($lookup);
+		
+		$filename = "/tmp/{$export->topic}.ser";
+		$ser = serialize($export);
+		file_put_contents($filename, $ser);
+		echo "Exported to {$filename} (", strlen($ser), " bytes)\n";
 	}
 
 }
